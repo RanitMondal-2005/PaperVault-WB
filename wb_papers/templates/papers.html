@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 mb-4 p-3 animate-fadeIn row">
+        <form method="GET" action="{% url 'papers' %}" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
+                <select name="college" class="form-select shadow-none border-primary-subtle">
+                    <option value="">All WB Colleges & Universities</option>
+                    {% for c in colleges %}
+                    <option value="{{c.id}}" {% if request.GET.college == c.id|stringformat:"s" %}selected{% endif %}>{{c.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted text-uppercase">Branch / Stream</label>
+                <select name="stream" class="form-select shadow-none border-primary-subtle">
+                    <option value="">Select Stream</option>
+                    {% for s in streams %}
+                    <option value="{{s.id}}" {% if request.GET.stream == s.id|stringformat:"s" %}selected{% endif %}>{{s.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted text-uppercase">Year</label>
+                    <select name="year" class="form-select shadow-none border-primary-subtle">
+                        <option value="">All Years</option>
+                        {% for y in year_range %}
+                            <option value="{{ y }}" {% if request.GET.year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted text-uppercase">Semester</label>
+                <select name="semester" class="form-select shadow-none border-primary-subtle">
+                    <option value="">All Sems</option>
+                    {% for i in "12345678" %}
+                    <option value="{{forloop.counter}}" {% if request.GET.semester == forloop.counter|stringformat:"s" %}selected{% endif %}>Sem {{forloop.counter}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100 shadow-sm fw-bold">
+                        <i class="bi bi-filter-circle me-2"></i>Apply Filters
+                    </button>
+                    <a href="{% url 'papers' %}" class="btn btn-outline-secondary shadow-sm">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive bg-white p-3 shadow-sm rounded border">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Subject Name</th>
+                    <th>Year</th>
+                    <th>Exam Type</th>
+                    <th>College</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td class="fw-bold">{{ paper.subject_name }}</td>
+                    <td>{{ paper.year }}</td>
+                    <td><span class="badge rounded-pill bg-info text-dark">{{ paper.exam_type }}</span></td>
+                    <td class="small text-muted">{{ paper.college.name }}</td>
+                    <td>
+                        <a href="{{ paper.pdf_file.url }}" class="btn btn-sm btn-outline-success" target="_blank">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>View/Download
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-search d-block fs-1 mb-2"></i>
+                        No question papers found matching your criteria.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="display-5"><span style="color: var(--accent-blue);">WB</span> Academic Paper Vault</h1>
+        <p class="lead text-muted">A centralized repository of verified question papers from colleges across West Bengal.</p>
+        <div class="mt-4">
+            <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5 me-2">I am Student</a>
+            <a href="{% url 'upload' %}" class="btn btn-faculty btn-lg px-5">I am Faculty</a>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h4 class="fw-bold mb-3">Participating Institues</h4>
+    
+    <div class="college-grid">
+        {% for clg in colleges %}
+        <a href="{% url 'papers' %}?college={{ clg.id }}" class="college-card">
+            <small class="text-uppercase fw-bold" style="color: var(--accent-blue); letter-spacing: 1px;">
+                {{ clg.university }}
+            </small>
+            <h5>{{ clg.name }}</h5>
+            <div class="mt-auto pt-2 small text-muted">View Repository &rarr;</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

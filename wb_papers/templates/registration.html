@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 animate-fadeIn">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4 fw-bold">Create Account</h2>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Register as:</label>
+                            <select name="role" class="form-select border-primary">
+                                <option value="STUDENT">Student (Access Only)</option>
+                                <option value="FACULTY">Faculty (Upload & Manage)</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2 shadow">Sign Up</button>
+                    </form>
+                    <p class="mt-3 text-center">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
