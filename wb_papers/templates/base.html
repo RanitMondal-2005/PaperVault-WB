@@ -17,8 +17,12 @@
         </a>
         <div class="ms-auto">
             {% if user.is_authenticated %}
-                <span class="text-white me-3 small">Hello, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
+                <span class="text-white me-3 small">Hi, {{ user.username }}</span>
+                <!-- Log out by default needs uses POST,since <a> tag in html gives GET by default, so for logout we will use form -->
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                </form>
             {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm px-4">Sign In</a>
             {% endif %}
