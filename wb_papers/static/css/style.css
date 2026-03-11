@@ -39,6 +39,51 @@ footer p, footer span, footer div {
     color: #ffffff !important;
 }
 
+
+/* --- Professional Announcement Ticker --- */
+
+/* NOTE : ticker in css refers to the creation of a continuously scrolling animation effect, also known as a marquee */
+.ticker-wrapper {
+    background: #f0f7ff; 
+    border-bottom: 1px solid var(--border-glow);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 12px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.ticker-text {
+    display: inline-block;
+    white-space: nowrap;
+    /* Starts from the right and moves left */
+    animation: ticker-move 50s linear infinite; 
+    color: var(--nav-footer-bg);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Individual spans inside the ticker for spacing */
+.ticker-text span {
+    margin-right: 80px;
+    display: inline-block;
+}
+
+/* Smooth motion along the X-axis */
+@keyframes ticker-move {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+}
+
+/* Interaction: Stop on hover so users can click links/read */
+.ticker-wrapper:hover .ticker-text {
+    animation-play-state: paused;
+    cursor: default;
+}
+
+
+
+
 /* HERO SECTION: White background with Royal Blue text */
 .hero-section {
     background: #ffffff;

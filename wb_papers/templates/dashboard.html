@@ -7,14 +7,22 @@
         <p class="lead text-muted">A centralized repository of verified question papers from colleges across West Bengal.</p>
         <div class="mt-4">
             <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5 me-2">I am Student</a>
-            <a href="{% url 'upload' %}" class="btn btn-faculty btn-lg px-5">I am Faculty</a>
+            <!-- upload chnaged to register -->
+            <a href="{% url 'register' %}" class="btn btn-faculty btn-lg px-5">I am Faculty</a>
         </div>
     </div>
 </div>
 
+<div class="ticker-wrapper">
+    <div class="ticker-text">
+        <span><i class="bi bi-info-circle me-2"></i><strong>Notice:</strong> Only Faculty members need to login to upload or manage papers.</span>
+        <span><i class="bi bi-person-check me-2"></i>Students can view and download all verified papers anytime, anywhere, without an account.</span>
+        <span><i class="bi bi-shield-lock me-2"></i>Faculty credentials are verified by the West Bengal Academic Board.</span>
+    </div>
+</div>
+
 <div class="container my-5">
-    <h4 class="fw-bold mb-3">Participating Institues</h4>
-    
+    <h4 class="fw-bold mb-4">Participating Institutes</h4>
     <div class="college-grid">
         {% for clg in colleges %}
         <a href="{% url 'papers' %}?college={{ clg.id }}" class="college-card">

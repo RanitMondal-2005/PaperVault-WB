@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-4 animate-up">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4 fw-bold" style="color: var(--nav-footer-bg);">Sign In</h2>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="form-group-custom">
+                            {% if form.errors %}
+                                <div class="alert alert-danger small">
+                                    Your username and password didn't match. Please try again.
+                                </div>
+                            {% endif %}
+
+                            {% for field in form %}
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold text-muted">{{ field.label }}</label>
+                                    {{ field }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-student w-100 py-2 shadow-sm fw-bold">Login</button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="small text-muted">Don't have an account? 
+                            <a href="{% url 'register' %}" style="color: var(--accent-blue); font-weight: 600;">Join Now</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

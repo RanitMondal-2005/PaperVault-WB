@@ -23,4 +23,4 @@ def register_view(request):
             return redirect('dashboard')
     else:
         form = SignUpForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'registration.html', {'form': form})
