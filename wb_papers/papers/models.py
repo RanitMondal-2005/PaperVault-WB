@@ -15,6 +15,7 @@ class Paper(models.Model):
     semester = models.IntegerField(choices=[(i, f"Semester {i}") for i in range(1, 9)])
     year = models.IntegerField()
     subject_name = models.CharField(max_length=150)
+    subject_code = models.CharField(max_length=20)
     # Fixed the choices reference below from LEFT_TYPES to EXAM_TYPES
     exam_type = models.CharField(max_length=20, choices=EXAM_TYPES) 
     pdf_file = models.FileField(upload_to='papers/%Y/%m/')
