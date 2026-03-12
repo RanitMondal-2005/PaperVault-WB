@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Paper
 from colleges.models import College, Stream
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 def dashboard(request):
     colleges = College.objects.all()
@@ -37,16 +38,21 @@ def paper_search(request):
     }
     return render(request, 'papers.html', context)
 
+from django.contrib import messages
+
 @login_required
 def upload_paper(request):
-    if request.user.profile.role != 'FACULTY':
+    # 1. Check if profile exists
+    if not hasattr(request.user, 'profile'):
+        messages.error(request, "Account error: Profile not found.")
         return redirect('dashboard')
+
+    # 2. Check for Faculty + Verification
+    if request.user.profile.role == 'FACULTY' and request.user.profile.is_verified:
+        form = Paper()
+        return render(request, 'upload.html', {'form': form})
     
-    if request.method == "POST":
-        # Professional implementation would use a Django Form
-        title = request.POST.get('title')
-        file = request.FILES.get('pdf')
-        # ... logic to save paper ...
-        return redirect('papers')
-    
-    return render(request, 'upload.html')
+    # 3. If not verified, send a Warning Message
+    else:
+        messages.warning(request, "Verification Pending: Your faculty account is currently under review by the WB Academic Board.")
+        return redirect('dashboard')

@@ -21,7 +21,7 @@ def populate():
         'Information Technology', 
         'Electronics & Communication Engineering', 
         'Mechanical Engineering', 
-        'Electrical Engineering'
+        'Electrical Engineering',
     ]
 
     for c_data in colleges_data:
