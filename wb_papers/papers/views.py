@@ -3,7 +3,8 @@ from .models import Paper
 from colleges.models import College, Stream
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
+from django.contrib import messages
+import datetime
 def dashboard(request):
     colleges = College.objects.all()
     return render(request, 'dashboard.html', {'colleges': colleges})
@@ -26,7 +27,7 @@ def paper_search(request):
         papers = papers.filter(year=year)
 
     # Generate a list of years for the dropdown (e.g., last 10 years)
-    import datetime
+    # import datetime
     current_year = datetime.datetime.now().year
     year_range = range(current_year, current_year - 10, -1)
 
@@ -38,19 +39,29 @@ def paper_search(request):
     }
     return render(request, 'papers.html', context)
 
-from django.contrib import messages
+
+
 
 @login_required
 def upload_paper(request):
+    collleges= College.objects.all()
+    streams= Stream.objects.all()
+    
+    current_year = datetime.datetime.now().year
+    year_range = range(current_year, current_year - 10, -1)
     # 1. Check if profile exists
     if not hasattr(request.user, 'profile'):
         messages.error(request, "Account error: Profile not found.")
-        return redirect('dashboard')
-
-    # 2. Check for Faculty + Verification
+        return redirect('dashboard')    
+    
+    
     if request.user.profile.role == 'FACULTY' and request.user.profile.is_verified:
-        form = Paper()
-        return render(request, 'upload.html', {'form': form})
+        form = Paper()          
+        return render(request, 'upload.html', {'form': form,
+                                               'collleges':collleges,
+                                               'streams':streams,
+                                               'year_range':year_range
+                                               })
     
     # 3. If not verified, send a Warning Message
     else:
