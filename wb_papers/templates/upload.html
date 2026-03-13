@@ -16,13 +16,24 @@
                         
                         <div class="row g-4">
                             <div class="col-md-12"><h6 class="text-primary fw-bold text-uppercase small">1. Institutional Details</h6></div>
-                            <div class="col-md-6">
-                                <label for="{{ form.college.id_for_label }}" class="form-label small fw-bold text-muted" >College / Institute</label>
-                                {{ form.college }}
+                                <div class="col-md-8">
+                                    <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
+                                    <select name="college" class="form-select shadow-none border-primary-subtle">
+                                        <option value="">All WB Colleges & Universities</option>
+                                        {% for c in collleges %}
+                                        <option>{{c.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <label for="{{ form.stream.id_for_label }}" class="form-label small fw-bold text-muted">Stream / Department</label>
-                                {{ form.stream }}
+                                <select name="college" class="form-select shadow-none border-primary-subtle">        
+                                        {% for c in streams %}
+                                        <option>{{c.name}}</option>
+                                        {% endfor %}
+                                </select>
                             </div>
 
                             <div class="col-md-12 mt-4"><h6 class="text-primary fw-bold text-uppercase small">2. Subject & Exam Info</h6></div>
