@@ -1,41 +1,59 @@
-# from django import models
-# from django import forms
-# from .models import Paper
-
-# class PaperUploadForm(forms.ModelForm):
-#     class Meta:
-#         model = Paper
-#         fields = ['title', 'college', 'stream', 'semester', 'year', 'subject_name', 'exam_type', 'pdf_file']
-#         widgets = {
-#             'title': forms.TextInput(attrs={'class': 'form-control'}),
-#             'college': forms.Select(attrs={'class': 'form-select'}),
-#             'stream': forms.Select(attrs={'class': 'form-select'}),
-#             'pdf_file': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf'}),
-#         }
-
-#     def clean_pdf_file(self):
-#         file = self.cleaned_data.get('pdf_file')
-#         if not file.name.endswith('.pdf'):
-#             raise forms.ValidationError("Only PDF files are allowed.")
-#         return file
-
+import datetime
 from django import forms
-from .models import Paper, College
+from .models import Paper
+from colleges.models import College, Stream
 
 class PaperUploadForm(forms.ModelForm):
-    EXAM_CHOICES = [('INTERNAL', 'Internal'), ('EXTERNAL', 'External')]
+    # 1. Fixed Choices with Practical and empty placeholder for validation
+    # FIX: Define Choices for dropdowns to replace standard number/text inputs
+    EXAM_CHOICES = [
+        ('', '--- Select Exam Type ---'),
+        ('INTERNAL', 'Internal / CA'),
+        ('SEMESTER', 'Semester (End-Sem)'),
+        ('PRACTICAL', 'Practical Exam'),
+    ]
+    # 1.1: Update the stream field to use a custom label
+    stream = forms.ModelChoiceField(
+        queryset=Stream.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'}),
+        empty_label="--- Select Stream ---"
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 1.2: FIX: Override the label display. 
+        # This stops it from showing "Stream - College Name" and shows ONLY "Stream Name"
+        self.fields['stream'].label_from_instance = lambda obj: f"{obj.name}"
+
+    # 2. Created Dropdowns for Semester (1-8)
+    SEM_CHOICES = [('', '--- Select Semester ---')] + [(i, f"Semester {i}") for i in range(1, 9)]
     
-    exam_type = forms.ChoiceField(choices=EXAM_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}))
-    semester = forms.IntegerField(min_value=1, max_value=8, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 4'}))
-    year = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 2024'}))
-    
+    # 3. Created Dropdowns for Year (Current to 2015)
+    current_year = datetime.date.today().year
+    YEAR_CHOICES = [('', '--- Select Year ---')] + [(r, r) for r in range(current_year, 2014, -1)]
+
+    # 4. Define fields explicitly to force Dropdowns and 'Required' tooltips
+    exam_type = forms.ChoiceField(
+        choices=EXAM_CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
+    )
+    semester = forms.ChoiceField(
+        choices=SEM_CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
+    )
+    year = forms.ChoiceField(
+        choices=YEAR_CHOICES, 
+        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
+    )
+
     class Meta:
         model = Paper
-        fields = ['college', 'department', 'subject_name', 'subject_code', 'exam_type', 'year', 'semester', 'pdf_file']
+        fields = ['title', 'college', 'stream', 'subject_name', 'subject_code', 'exam_type', 'year', 'semester', 'pdf_file']
         widgets = {
-            'college': forms.Select(attrs={'class': 'form-select'}),
-            'department': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Computer Science'}),
-            'subject_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Data Structures'}),
-            'subject_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. CS401'}),
-            'pdf_file': forms.FileInput(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Data Structures & Algorithm', 'required': 'true'}),
+            'college': forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'}),
+            'stream': forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'}),
+            'subject_name': forms.TextInput(attrs={'class': 'form-control shadow-none', 'placeholder': 'Enter Subject Name', 'required': 'true'}),
+            'subject_code': forms.TextInput(attrs={'class': 'form-control shadow-none', 'placeholder': 'e.g. CS-401', 'required': 'true'}),
+            'pdf_file': forms.FileInput(attrs={'class': 'form-control', 'required': 'true'}),
         }
