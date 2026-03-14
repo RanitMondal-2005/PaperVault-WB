@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-5" style="position: relative; z-index: 1;">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg border-0 rounded-4">
@@ -16,61 +16,58 @@
                         
                         <div class="row g-4">
                             <div class="col-md-12"><h6 class="text-primary fw-bold text-uppercase small">1. Institutional Details</h6></div>
-                                <div class="col-md-8">
-                                    <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
-                                    <select name="college" class="form-select shadow-none border-primary-subtle">
-                                        <option value="">All WB Colleges & Universities</option>
-                                        {% for c in collleges %}
-                                        <option>{{c.name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
+                            
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Paper Title</label>
+                                {{ form.title }}
                             </div>
-                            <div class="col-md-8">
-                                <label for="{{ form.stream.id_for_label }}" class="form-label small fw-bold text-muted">Stream / Department</label>
-                                <select name="college" class="form-select shadow-none border-primary-subtle">        
-                                        {% for c in streams %}
-                                        <option>{{c.name}}</option>
-                                        {% endfor %}
-                                </select>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
+                                {{ form.college }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-muted text-uppercase">Stream / Department</label>
+                                {{ form.stream }}
                             </div>
 
                             <div class="col-md-12 mt-4"><h6 class="text-primary fw-bold text-uppercase small">2. Subject & Exam Info</h6></div>
-                            <div class="col-md-8">
-                                <label for="{{ form.subject_name.id_for_label }}" class="form-label small fw-bold text-muted">Subject Name</label>
+                            <div class="col-md-8">                                
+                                <label class="form-label small fw-bold text-muted text-uppercase">Subject Name</label>
                                 {{ form.subject_name }}
                             </div>
                             <div class="col-md-4">
-                                <label for="{{ form.subject_code.id_for_label }}" class="form-label small fw-bold text-muted">Subject Code</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Subject Code</label>
                                 {{ form.subject_code }}
                             </div>
                             
                             <div class="col-md-4">
-                                <label for="{{ form.exam_type.id_for_label }}" class="form-label small fw-bold text-muted">Exam Type</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Exam Type</label>
                                 {{ form.exam_type }}
                             </div>
                             <div class="col-md-4">
-                                <label for="{{ form.year.id_for_label }}" class="form-label small fw-bold text-muted">Year</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Exam Year</label>
                                 {{ form.year }}
                             </div>
                             <div class="col-md-4">
-                                <label for="{{ form.semester.id_for_label }}" class="form-label small fw-bold text-muted">Semester</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Semester</label>
                                 {{ form.semester }}
                             </div>
 
                             <div class="col-md-12 mt-4">
-                                <label class="form-label small fw-bold text-muted">Document Attachment</label>
-                                <div class="p-4 border border-dashed rounded-3 bg-light text-center" style="position: relative;">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Document Attachment</label>
+                                <div class="p-4 border border-dashed rounded-3 bg-light text-center">
                                     <i class="bi bi-file-earmark-pdf fs-2 text-danger mb-2 d-block"></i>
-                                    {{ form.pdf_file }}
+                                    <div class="input-group">
+                                        {{ form.pdf_file }}
+                                    </div>
                                     <div class="mt-2 text-muted small">Only PDF files up to 5MB.</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-5 pt-3">
-                            <button type="submit" class="btn btn-student btn-lg w-100 py-3 fw-bold shadow">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow">
                                 <i class="bi bi-cloud-check-fill me-2"></i>Publish to Archive
                             </button>
                         </div>
@@ -81,3 +78,4 @@
     </div>
 </div>
 {% endblock %}
+
