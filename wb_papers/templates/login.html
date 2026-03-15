@@ -8,6 +8,11 @@
                 <div class="card-body p-5">
                     <h2 class="text-center mb-4 fw-bold" style="color: var(--nav-footer-bg);">Sign In</h2>
                     
+                    <div class="alert alert-primary text-center" role="alert">
+                        ⚠ Only teachers/faculty are allowed to create accounts.
+                    </div>
+                    
+                    
                     <form method="POST">
                         {% csrf_token %}
                         

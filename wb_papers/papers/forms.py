@@ -1,6 +1,7 @@
 import datetime
 from django import forms
 from .models import Paper
+from django.core.validators import FileExtensionValidator # For PDF validation of Upload Form
 from colleges.models import College, Stream
 
 class PaperUploadForm(forms.ModelForm):
@@ -45,7 +46,11 @@ class PaperUploadForm(forms.ModelForm):
         choices=YEAR_CHOICES, 
         widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
     )
-
+    # FIX: Added FileExtensionValidator to ensure only PDFs are accepted
+    pdf_file = forms.FileField(
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])],
+        widget=forms.FileInput(attrs={'class': 'form-control', 'required': 'true', 'accept': '.pdf'})
+    )
     class Meta:
         model = Paper
         fields = ['title', 'college', 'stream', 'subject_name', 'subject_code', 'exam_type', 'year', 'semester', 'pdf_file']
