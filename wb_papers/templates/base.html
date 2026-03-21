@@ -9,47 +9,127 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.2">
     <title>PaperVault WB</title>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg sticky-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold fs-3" href="/">
-            Academic Archive
-        </a>
-        <div class="ms-auto">
-            {% if user.is_authenticated %}
-                <span class="text-white me-3 small">Hi, {{ user.username }}</span>
-                <!-- Log out by default needs uses POST,since <a> tag in html gives GET by default, so for logout we will use form -->
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-                </form>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm px-4">Sign In</a>
-            {% endif %}
-        </div>
-    </div>
-</nav>
-<div class="container mt-3">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-0" role="alert">
-                <i class="bi bi-exclamaition-triangle-fill me-2"></i> {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-</div>
-{% block content %}{% endblock %}
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-5" href="{% url 'dashboard' %}">
+                <i class="bi bi-bank2 me-2 text-primary"></i>
+                <span>PaperVault<span class="text-primary">WB</span></span>
+            </a>
 
-<footer class="py-5 mt-5">
-    <div class="container text-center">
-        <p class="mb-0">&copy; 2026 PaperVault WB. All rights reserved.</p>
-        <div class="mt-2">
-            <small class="opacity-75 text-white">Verified Faculty Repository</small>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto ms-lg-5">
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url 'dashboard' %}"><i class="bi bi-house-door me-1"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url 'papers' %}">Archives</a>
+                    </li>
+                    {% if user.is_authenticated and user.profile.role == 'FACULTY' %}
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="{% url 'upload' %}">Upload Portal</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle fs-5 me-2"></i>
+                                <span class="small fw-medium">{{ user.username }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                <li><a class="dropdown-item py-2" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm w-100 mt-1">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">Sign In</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
+                    <div class="d-flex align-items-center">
+                        {% if message.tags == 'success' %}
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                        {% else %}
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                    </div>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div class="container-fluid bg-sky-light border-top mt-5 py-3">
+        <div class="container text-center">
+            <a href="#" class="back-to-top-link text-decoration-none small fw-bold">
+                <i class="bi bi-arrow-up-circle-fill me-1"></i> Back to Top
+            </a>
         </div>
     </div>
-</footer>
-    
+
+    <footer class="pt-5 pb-4">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-5 col-md-6">
+                    <h5 class="text-white fw-bold mb-3 small">PaperVault WB</h5>
+                    <p class="small text-white-50 lh-lg" style="max-width: 350px;">
+                        The premier decentralized academic repository providing verified access to previous examination papers for West Bengal institutions. 
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6 ms-auto">
+                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">Resources</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none hover-white transition">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'papers' %}" class="text-white-50 text-decoration-none hover-white transition">Search Archive</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">Support</h6>
+                    <ul class="list-unstyled small text-white-50">
+                        <li class="mb-2"><i class="bi bi-envelope-at me-2 text-primary"></i> help@papervault.wb</li>
+                        <li class="mb-2"><i class="bi bi-phone me-2 text-primary"></i> Contact: +91 335-4256-78</li>
+                        <li class="mb-2"><i class="bi bi-building me-2 text-primary"></i> West Bengal, India</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="mt-4 mb-4 border-secondary opacity-25">
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <p class="small text-white-50 mb-0">&copy; 2026 PaperVault WB. Built for academic excellence.</p>
+                <div class="d-flex gap-3">
+                    <span class="badge bg-secondary bg-opacity-10 text-white-50 fw-normal border border-secondary border-opacity-25 px-3 py-2">
+                        <i class="bi bi-shield-lock me-1"></i> Verified Faculty Portal
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
