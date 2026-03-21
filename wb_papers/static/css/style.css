@@ -190,3 +190,33 @@ footer {
 .text-white-50 {
     color: rgba(255, 255, 255, 0.6) !important;
 }
+
+/* --- Form Alignment & Styling --- */
+
+/* Targets the containers in login and registration */
+.form-group-custom input, 
+.registration-form-container input,
+.registration-form-container select {
+    display: block;
+    width: 100% !important; /* Forces all boxes to the same width */
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-top: 0.25rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover & Focus Effects */
+.form-group-custom input:focus,
+.registration-form-container input:focus {
+    border-color: var(--accent-blue);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+/* Ensures labels are always stacked on top */
+.form-label.d-block {
+    margin-bottom: 2px;
+    text-align: left; /* Keeps everything aligned to the left wall */
+}
