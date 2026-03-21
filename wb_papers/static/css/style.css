@@ -1,95 +1,50 @@
+/* 1. CORE VARIABLES & BASE STYLES */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --nav-footer-bg: #0a192f;  /* Deep Navy */
-    --accent-blue: #0056b3;    /* Royal Blue */
-    --text-dark: #1a1a1a;
-    --border-glow: rgba(0, 86, 179, 0.3);
+    --nav-footer-bg: #0f172a;      /* Deep Slate */
+    --accent-blue: #2563eb;        /* Royal Blue */
+    --light-blue-bg: #f0f7ff;      /* For Ticker & Back-to-Top */
+    --text-dark: #334155;
+    --border-glow: rgba(37, 99, 235, 0.5); /* Boosted for visibility */
 }
 
 body {
-    background-color: #ffffff; /* White background for the main body */
+    background-color: #fcfcfd; 
     color: var(--text-dark);
     font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+    margin: 0;
 }
-/* NAVBAR & FOOTER: Solid Navy for distinct separation */
-.navbar, footer {
+
+/* 2. NAVIGATION (NAVBAR) */
+.navbar {
     background-color: var(--nav-footer-bg) !important;
 }
 
-.navbar-brand, .navbar-brand span {
-    color: #ffffff !important;
+.navbar-brand {
+    letter-spacing: -0.5px;
 }
 
-
-/* BUTTON HOVER */
-.btn-student:hover {
-    background-color: var(--nav-footer-bg) !important; /* Darker blue on hover */
-    color: white !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.btn-faculty:hover {
-    background-color: var(--accent-blue) !important; /* Fills in with blue */
-    color: white !important; /* Text turns white to stay visible */
-    transform: translateY(-2px);
-}
-
-/* FOOTER TEXT: Simple White */
-footer p, footer span, footer div {
-    color: #ffffff !important;
-}
-
-
-/* --- Professional Announcement Ticker --- */
-
-/* NOTE : ticker in css refers to the creation of a continuously scrolling animation effect, also known as a marquee */
-.ticker-wrapper {
-    background: #f0f7ff; 
-    border-bottom: 1px solid var(--border-glow);
-    overflow: hidden;
-    white-space: nowrap;
-    padding: 12px 0;
-    position: relative;
-    z-index: 5;
-}
-
-.ticker-text {
-    display: inline-block;
-    white-space: nowrap;
-    /* Starts from the right and moves left */
-    animation: ticker-move 50s linear infinite; 
-    color: var(--nav-footer-bg);
-    font-weight: 500;
+.nav-link {
     font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7) !important;
+    transition: color 0.2s ease;
+    display: flex !important;
+    align-items: center !important;
 }
 
-/* Individual spans inside the ticker for spacing */
-.ticker-text span {
-    margin-right: 80px;
-    display: inline-block;
+.nav-link:hover {
+    color: #ffffff !important;
 }
 
-/* Smooth motion along the X-axis */
-@keyframes ticker-move {
-    0% { transform: translateX(100vw); }
-    100% { transform: translateX(-100%); }
-}
-
-/* Interaction: Stop on hover so users can click links/read */
-.ticker-wrapper:hover .ticker-text {
-    animation-play-state: paused;
-    cursor: default;
-}
-
-
-
-
-/* HERO SECTION: White background with Royal Blue text */
+/* 3. HERO SECTION */
 .hero-section {
     background: #ffffff;
-    padding: 80px 0;
+    padding: 100px 0;
     text-align: center;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .hero-section h1 {
@@ -97,53 +52,141 @@ footer p, footer span, footer div {
     font-weight: 800;
 }
 
-/* THE GRID & CARDS: White cards on White bg with Royal Blue glow */
+/* 4. ANNOUNCEMENT TICKER (FIXED LIGHT BLUE) */
+.ticker-wrapper {
+    background: var(--light-blue-bg) !important; /* Forces the soft blue color */
+    border-top: 1px solid rgba(37, 99, 235, 0.1);
+    border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 14px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.ticker-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: ticker-move 50s linear infinite; 
+    color: var(--nav-footer-bg);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.ticker-text span {
+    margin-right: 80px;
+}
+
+@keyframes ticker-move {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+}
+
+.ticker-wrapper:hover .ticker-text {
+    animation-play-state: paused;
+}
+
+/* 5. BUTTONS (FIXED HOVER STATES) */
+.btn-student {
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+    border: 2px solid var(--accent-blue);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-student:hover {
+    background-color: #1d4ed8 !important; /* Darker Blue */
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-faculty {
+    background-color: transparent !important;
+    color: var(--accent-blue) !important;
+    border: 2px solid var(--accent-blue);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-faculty:hover {
+    background-color: var(--accent-blue) !important; /* Fills with Blue */
+    color: white !important;                         /* Text turns White */
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* 6. COLLEGE GRID & GLOWING CARDS */
+/* --- COLLEGE GRID & FLOATING CARDS --- */
 .college-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 35px; /* Increased gap to give the glow room to spread */
+    padding: 20px 10px; /* Padding so the glow doesn't cut off at the edges */
     margin-top: 40px;
 }
 
 .college-card {
     background: #ffffff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 25px;
     text-decoration: none !important;
-    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    position: relative; /* Essential for z-index layering */
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy professional feel */
     box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
-/* Hover: Lift + Royal Blue Glowing Ring */
+/* THE NEON BLUE RING GLOW FIX */
 .college-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 15px var(--border-glow);
+    transform: translateY(-12px); /* Higher lift */
+    border-color: var(--accent-blue) !important;
+    z-index: 10; /* Ensures the glowing card stays on top of others */
+    
+    /* LAYER 1: Deep shadow for the "Floating" effect 
+       LAYER 2: Soft Blue Halo 
+       LAYER 3: Sharp Neon Blue Ring (the "Glow")
+    */
+    box-shadow: 
+        0 20px 30px rgba(15, 23, 42, 0.1),   /* Depth */
+        0 0 15px rgba(37, 99, 235, 0.3),     /* Soft Halo */
+        0 0 30px rgba(37, 99, 235, 0.6);     /* THE NEON GLOW */
 }
 
 .college-card h5 {
     color: var(--nav-footer-bg);
     margin: 10px 0;
+    font-weight: 700;
 }
 
-/* BUTTONS: I am Student / Faculty */
-.btn-student {
-    background-color: var(--accent-blue);
-    color: white !important;
-    border-radius: 6px;
-    font-weight: 600;
+/* 7. FOOTER & UTILITIES */
+footer {
+    background-color: var(--nav-footer-bg) !important;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
 }
 
-.btn-faculty {
-    border: 2px solid var(--accent-blue);
+.bg-sky-light {
+    background-color: var(--light-blue-bg) !important;
+    border-top: 1px solid #e1effe;
+}
+
+.back-to-top-link {
     color: var(--accent-blue) !important;
-    border-radius: 6px;
-    font-weight: 600;
+    font-weight: 700;
+    transition: all 0.2s ease;
 }
 
-.btn-faculty:hover {
-    background-color: #f0f7ff;
+.back-to-top-link:hover {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+}
+
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.6) !important;
 }

@@ -1,35 +1,72 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="hero-section">
+<div class="hero-section text-center py-5">
     <div class="container">
-        <h1 class="display-5"><span style="color: var(--accent-blue);">WB</span> Academic Paper Vault</h1>
+        <h1 class="display-5 fw-bold"><span style="color: var(--accent-blue);">WB</span> Academic Paper Vault</h1>
         <p class="lead text-muted">A centralized repository of verified question papers from colleges across West Bengal.</p>
+        
         <div class="mt-4">
-            <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5 me-2">I am Student</a>
-            <!-- upload chnaged to register -->
-            <a href="{% url 'upload' %}" class="btn btn-faculty btn-lg px-5">I am Faculty</a>
+            {% if user.is_authenticated and user.profile.role == 'FACULTY' %}
+                <!-- Edit paper Logic still left to be implemented -->
+                <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5 me-2">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Your Papers
+                </a>
+                <!-- ............................................. -->
+                <a href="{% url 'upload' %}" class="btn btn-faculty btn-lg px-5">
+                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload New Paper
+                </a>
+            {% else %}
+                <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5 me-2">I am Student</a>
+                <a href="{% url 'login' %}" class="btn btn-faculty btn-lg px-5">I am Faculty</a>
+            {% endif %}
         </div>
     </div>
 </div>
-
-<div class="ticker-wrapper">
-    <div class="ticker-text">
-        <span><i class="bi bi-info-circle me-2"></i><strong>Notice:</strong> Only Faculty members need to login to upload or manage papers.</span>
-        <span><i class="bi bi-person-check me-2"></i>Students can view and download all verified papers anytime, anywhere, without an account.</span>
-        <span><i class="bi bi-shield-lock me-2"></i>Faculty credentials are verified by the West Bengal Academic Board.</span>
+<!-- Only Show 'DISCLAIMER NOTICE' in without-Logged in Page -->
+{% if not user.is_authenticated %}
+    <div class="ticker-wrapper">
+        <div class="ticker-text">
+            <span><i class="bi bi-info-circle me-2"></i><strong>Notice:</strong> Only Faculty members need to login to upload or manage papers.</span>
+            <span><i class="bi bi-person-check me-2"></i>Students can download papers without an account.</span>
+            <span><i class="bi bi-shield-lock me-2"></i>Faculty credentials are verified by the West Bengal Academic Board.</span>
+        </div>
     </div>
-</div>
+{% else %}
+<!-- No need to show Disclaimer notice of Login for Faculties -->
+    {% if user.profile.is_verified %}
+        <div class="ticker-wrapper" style="background: #f0fdf4; border-color: #dcfce7;"> 
+            <div class="container d-flex justify-content-between align-items-center py-1">
+                <span class="small fw-medium text-success">
+                    <i class="bi bi-patch-check-fill me-2"></i>Account Status: <strong>Verified Faculty</strong>
+                </span>
+                <span class="small text-muted">
+                    <i class="bi bi-shield-fill-check me-1 text-success"></i> Permissions: <span class="text-success">Full Access</span>
+                </span>
+            </div>
+        </div>
+    {% else %}
+        <div class="ticker-wrapper" style="background: #fffbeb; border-color: #fef3c7;"> <div class="container d-flex justify-content-between align-items-center py-1">
+                <span class="small fw-medium text-warning text-dark">
+                    <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>Account Status: <strong>Verification Pending</strong>
+                </span>
+                <span class="small text-muted">
+                    <i class="bi bi-hourglass-split me-1"></i> Action: <span class="fw-bold text-danger">Waiting for Admin Approval</span>
+                </span>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
 
 <div class="container my-5">
-    <h4 class="fw-bold mb-4">Participating Institutes</h4>
+    <h4 class="fw-bold mb-4 border-start border-primary border-4 ps-3">Participating Institutes</h4>
     <div class="college-grid">
         {% for clg in colleges %}
-        <a href="{% url 'papers' %}?college={{ clg.id }}" class="college-card">
-            <small class="text-uppercase fw-bold" style="color: var(--accent-blue); letter-spacing: 1px;">
+        <a href="{% url 'papers' %}?college={{ clg.id }}" class="college-card text-decoration-none p-4 border rounded shadow-sm d-block transition-hover">
+            <small class="text-uppercase fw-bold d-block mb-2" style="color: var(--accent-blue); letter-spacing: 1px;">
                 {{ clg.university }}
             </small>
-            <h5>{{ clg.name }}</h5>
+            <h5 class="text-dark">{{ clg.name }}</h5>
             <div class="mt-auto pt-2 small text-muted">View Repository &rarr;</div>
         </a>
         {% endfor %}
