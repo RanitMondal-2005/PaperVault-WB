@@ -12,9 +12,10 @@
                         ⚠ Only teachers/faculty are allowed to create accounts.
                     </div>
                     
-                    
                     <form method="POST">
                         {% csrf_token %}
+                        
+                        <input type="hidden" name="next" value="{% url 'dashboard' %}">
                         
                         <div class="form-group-custom">
                             {% if form.errors %}
@@ -22,11 +23,30 @@
                                     Your username and password didn't match. Please try again.
                                 </div>
                             {% endif %}
-
+                            
                             {% for field in form %}
                                 <div class="mb-3">
-                                    <label class="form-label small fw-bold text-muted">{{ field.label }}</label>
+                                    <label class="form-label small fw-bold text-muted">
+                                        {% if field.label == "Username" %}
+                                           Faculty ID (Login)
+                                        {% else %}
+                                            {{ field.label }}
+                                        {% endif %}
+                                    </label>
+                                    <!-- Generate the Form labels -->
                                     {{ field }}
+                                    <!-- ....... -->
+                                    {% if field.label == "Password" %}
+                                        <div class="form-text text-primary small">
+                                            <i class="bi bi-shield-lock me-1"></i> 
+                                            Enter your secret password to continue.
+                                        </div>
+                                    {% elif field.label == "Username" %}
+                                        <div class="form-text text-primary small">
+                                            <i class="bi bi-person-badge me-1"></i> 
+                                            Enter your Faculty ID(Username) to continue.
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                         </div>
