@@ -2,12 +2,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from . import views
 urlpatterns = [
    
     path('admin/', admin.site.urls), 
     path('', include('papers.urls')),
     path('users/', include('users.urls')),
+    # about us page
+    path('about/', views.about_view, name='about'),
 ]
 
 if settings.DEBUG:

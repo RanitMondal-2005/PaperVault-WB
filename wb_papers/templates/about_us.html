@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold display-5 text-dark">Empowering <span class="text-primary">Academic Excellence</span></h1>
+        <p class="lead text-muted mx-auto mt-3" style="max-width: 800px;">
+            PaperVault WB is a specialized digital repository designed to bridge the gap between West Bengal's academic history and its digital future.
+        </p>
+    </div>
+
+    <div class="row g-4 mb-5 pt-4">
+        <div class="col-lg-6">
+            <div class="p-5 bg-light rounded-4 h-100 shadow-sm">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-bullseye fs-2 text-primary me-3"></i>
+                    <h3 class="fw-bold mb-0">Our Mission</h3>
+                </div>
+                <p class="text-muted lh-lg">
+                    To provide students and educators with a seamless, verified, and organized platform for accessing previous years' examination papers. We believe that accessibility to quality resources shouldn't be a hurdle in a student's journey toward success.
+                </p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-5 bg-light rounded-4 h-100 shadow-sm">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-eye fs-2 text-primary me-3"></i>
+                    <h3 class="fw-bold mb-0">Our Vision</h3>
+                </div>
+                <p class="text-muted lh-lg">
+                    To become the standard decentralized archive for West Bengal institutions, integrating cutting-edge analysis to help students identify trends and better prepare for their future careers.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 py-5 text-center border-top">
+        <div class="col-md-4">
+            <div class="p-3">
+                <i class="bi bi-patch-check text-primary fs-1 mb-3 d-block"></i>
+                <h5 class="fw-bold">Verified Content</h5>
+                <p class="small text-muted">All papers are vetted and uploaded exclusively by registered faculty members.</p>
+            </div>
+        </div>
+        <div class="col-md-4 border-start border-end">
+            <div class="p-3">
+                <i class="bi bi-unlock text-primary fs-1 mb-3 d-block"></i>
+                <h5 class="fw-bold">Open Access</h5>
+                <p class="small text-muted">A decentralized repository ensuring 24/7 availability for students across the state.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3">
+                <i class="bi bi-cpu text-primary fs-1 mb-3 d-block"></i>
+                <h5 class="fw-bold">Smart Analysis</h5>
+                <p class="small text-muted">Future-ready infrastructure designed to support intelligent paper analysis and trends.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 text-center bg-primary p-5 rounded-4 shadow">
+            <h3 class="text-white fw-bold mb-3">Join the Academic Revolution</h3>
+            <p class="text-white-50 mb-4">Whether you are a student looking for resources or a faculty member wanting to contribute, PaperVault WB is your home.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'register' %}" class="btn btn-light px-4 fw-bold">Register Now</a>
+                <a href="{% url 'papers' %}" class="btn btn-outline-light px-4 fw-bold">Browse Archive</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
