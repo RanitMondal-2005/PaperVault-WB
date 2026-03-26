@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% comment %} For now ,lets just keep AI part in Comming Soon {% endcomment %}
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow-lg border-0 p-5 animate-up" style="background: rgba(255, 255, 255, 0.9);">
+                <div class="card-body">
+                    {% comment %} AI Logo {% endcomment %}
+                    <div class="mb-4">
+                        <i class="bi bi-stars text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    {% comment %} ........ {% endcomment %}
+                    <h1 class="fw-bold mb-3" style="color: var(--nav-footer-bg);">AI Paper Lab</h1>
+                    <p class="text-muted fs-5 mb-4">
+                        We are building a powerful AI engine to help you extract important topics, 
+                        summarize long papers, and generate practice questions instantly.
+                    </p>
+
+                    <div class="progress mb-4" style="height: 10px; border-radius: 5px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                             role="progressbar" style="width: 30%"></div>
+                    </div>
+
+                    <p class="small text-muted mt-2 fw-bold opacity-75">
+                            <i class="bi bi-cpu me-1"></i> Model Training in Progress...
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <span class="badge bg-light text-primary border px-3 py-2">Topic Extraction</span>
+                        <span class="badge bg-light text-primary border px-3 py-2">Smart Summaries</span>
+                        <span class="badge bg-light text-primary border px-3 py-2">PDF Analysis</span>
+                    </div>
+
+                    <h4 class="text-uppercase fw-bold text-primary" style="letter-spacing: 2px;">Coming Soon</h4>
+                    
+                    <h2 class="text-uppercase fw-bold text-primary" style="letter-spacing: 2px;">Stay Tuned</h2>
+                    <p class="small text-muted mt-2">Expected Launch: May 2027</p>
+
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary rounded-pill px-4 mt-3">
+                        <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

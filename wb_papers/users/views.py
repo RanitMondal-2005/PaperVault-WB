@@ -24,3 +24,7 @@ def register_view(request):
     else:
         form = SignUpForm()
     return render(request, 'registration.html', {'form': form})
+
+# just Integrate the Feature ( Logic still under development)
+def ai_analyzer(request):
+    return render(request,'ai_analyzer.html')
