@@ -10,6 +10,8 @@ urlpatterns = [
     path('users/', include('users.urls')),
     # about us page
     path('about/', views.about_view, name='about'),
+    # contact us page
+    path('contactUs/', views.contact_us, name='contact_us'),
 ]
 
 if settings.DEBUG:
