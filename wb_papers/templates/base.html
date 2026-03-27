@@ -114,17 +114,40 @@
                 <div class="col-lg-3 col-md-6 ms-auto">
                     <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">Resources</h6>
                     <ul class="list-unstyled small">
+                        
                         <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none hover-white transition">Home</a></li>
                         <li class="mb-2"><a href="{% url 'papers' %}" class="text-white-50 text-decoration-none hover-white transition">Search Archive</a></li>
                         <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none hover-white transition">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'contact_us' %}" class="text-white-50 text-decoration-none hover-white transition">Contact Us</a></li>
                     </ul>
                 </div>
+                {% comment %} Implementing Contact US {% endcomment %}
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">Support</h6>
+                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">
+                        <a href="{% url 'contact_us' %}" class="text-white text-decoration-none hover-white">Support</a>
+                    </h6>
                     <ul class="list-unstyled small text-white-50">
-                        <li class="mb-2"><i class="bi bi-envelope-at me-2 text-primary"></i> help@papervault.wb</li>
-                        <li class="mb-2"><i class="bi bi-phone me-2 text-primary"></i> Contact: +91 335-4256-78</li>
-                        <li class="mb-2"><i class="bi bi-building me-2 text-primary"></i> West Bengal, India</li>
+                        <!-- Email Link -->
+                        <li class="mb-2">
+                            {% comment %} "mailto:" <- This the thing that is acting as real Email link  {% endcomment %}
+                            <a href="mailto:help@papervault.wb" class="text-white-50 text-decoration-none hover-white transition">
+                                <i class="bi bi-envelope-at me-2 text-primary"></i> help@papervault.wb
+                            </a>
+                        </li>
+                        <!-- Phone Link -->
+                        <li class="mb-2">
+                            {% comment %} "tel:" <- This is the thing that is acting as real Call {% endcomment %}
+                            <a href="tel:+91335425678" class="text-white-50 text-decoration-none hover-white transition">
+                                <i class="bi bi-phone me-2 text-primary"></i> +91 335-4256-78
+                            </a>
+                        </li>
+                        <!-- Location -->
+                        <li class="mb-2">
+                            <span class="d-flex align-items-start">
+                                <i class="bi bi-geo-alt me-2 text-primary"></i> 
+                                <span>West Bengal, India</span>
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
