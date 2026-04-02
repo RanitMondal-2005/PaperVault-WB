@@ -120,48 +120,44 @@ body {
 
 /* 6. COLLEGE GRID & GLOWING CARDS */
 /* --- COLLEGE GRID & FLOATING CARDS --- */
-.college-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 35px; /* Increased gap to give the glow room to spread */
-    padding: 20px 10px; /* Padding so the glow doesn't cut off at the edges */
-    margin-top: 40px;
-}
-
-.college-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 25px;
-    text-decoration: none !important;
+.college-card-neon {
+    background: #f8f9fa; 
+    /* 1. Slower duration (0.5s) and 'ease-out' for a silky feel */
+    transition: 
+        transform 0.5s ease-out, 
+        box-shadow 0.5s ease-out, 
+        background-color 0.4s ease, 
+        border-color 0.4s ease !important;
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
-    position: relative; /* Essential for z-index layering */
-    z-index: 1;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy professional feel */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid transparent; /* Prevents "jumping" on hover */
 }
 
-/* THE NEON BLUE RING GLOW FIX */
-.college-card:hover {
-    transform: translateY(-12px); /* Higher lift */
-    border-color: var(--accent-blue) !important;
-    z-index: 10; /* Ensures the glowing card stays on top of others */
+.college-card-neon:hover {
+    /* 2. Reduced lift (from 12px to 6px) and REMOVED scale(1.02) to stop the 'popping' */
+    transform: translateY(-6px); 
+    background: #ffffff !important;
+    z-index: 10;
+    border-color: rgba(37, 99, 235, 0.2) !important;
     
-    /* LAYER 1: Deep shadow for the "Floating" effect 
-       LAYER 2: Soft Blue Halo 
-       LAYER 3: Sharp Neon Blue Ring (the "Glow")
-    */
+    /* 3. Softened Glow: Reduced opacity and increased spread for a 'cloud' effect rather than a 'ring' */
     box-shadow: 
-        0 20px 30px rgba(15, 23, 42, 0.1),   /* Depth */
-        0 0 15px rgba(37, 99, 235, 0.3),     /* Soft Halo */
-        0 0 30px rgba(37, 99, 235, 0.6);     /* THE NEON GLOW */
+        0 10px 20px rgba(15, 23, 42, 0.05),   /* Subtle Depth */
+        0 0 20px rgba(37, 99, 235, 0.15),     /* Faint Blue Halo */
+        0 0 40px rgba(37, 99, 235, 0.25) !important; /* Soft diffused glow */
 }
 
-.college-card h5 {
-    color: var(--nav-footer-bg);
-    margin: 10px 0;
-    font-weight: 700;
+/* 4. Removed the 'Logo Tilt' - it was likely causing the irritation */
+.college-logo-container {
+    transition: transform 0.5s ease-out;
+}
+
+/* 5. Minimal Arrow movement */
+.college-card-neon:hover .transition-arrow {
+    transform: translateX(4px);
+    transition: transform 0.4s ease-out;
 }
 
 /* 7. FOOTER & UTILITIES */
