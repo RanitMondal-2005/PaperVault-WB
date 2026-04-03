@@ -52,39 +52,71 @@
         </form>
     </div>
     <div class="table-responsive bg-white p-3 shadow-sm rounded border">
-        <table class="table table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Subject Name</th>
-                    <th>Year</th>
-                    <th>Exam Type</th>
-                    <th>College</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for paper in papers %}
-                <tr>
-                    <td class="fw-bold">{{ paper.subject_name }}</td>
-                    <td>{{ paper.year }}</td>
-                    <td><span class="badge rounded-pill bg-info text-dark">{{ paper.exam_type }}</span></td>
-                    <td class="small text-muted">{{ paper.college.name }}</td>
-                    <td>
-                        <a href="{{ paper.pdf_file.url }}" class="btn btn-sm btn-outline-success" target="_blank">
-                            <i class="bi bi-file-earmark-pdf me-1"></i>View/Download
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center py-5 text-muted">
-                        <i class="bi bi-search d-block fs-1 mb-2"></i>
-                        No question papers found matching your criteria.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <table class="table table-hover align-middle custom-paper-table">
+    <thead class="table-dark">
+        <tr>
+            <th class="col-sub" style="width: 25%;">Subject & Code</th>
+            <th class="col-sem text-center" style="width: 8%;">Sem</th>
+            <th class="col-year text-center" style="width: 10%;">Year</th>
+            <th class="col-type text-center" style="width: 12%;">Type</th>
+            <th class="col-clg" style="width: 30%;">College / University</th>
+            <th class="col-action text-end" style="width: 25%; padding-right: 20px;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for paper in papers %}
+        <tr>
+            <td class="col-sub">
+                <div class="fw-bold text-dark">{{ paper.subject_name }}</div>
+                <span class="badge bg-light text-secondary border fw-normal" style="font-size: 0.7rem;">
+                    {{ paper.subject_code }}
+                </span>
+            </td>
+
+            <td class="col-sem text-secondary">{{ paper.year }}</td>
+
+            <td class="col-year text-secondary">{{ paper.semester }}</td>
+            <td class="col-type">
+                <span class="badge bg-info-subtle text-dark border-0 px-2" style="font-size: 0.7rem;">{{ paper.exam_type|title }}</span>  
+            </td>
+
+            <td class="col-clg small text-muted">
+                <div class="text-truncate" style="max-width: 180px;" title="{{ paper.college.name }}">
+                    {{ paper.college.name }}
+                </div>
+            </td>
+
+            <td class="col-action text-end">
+                <div class="d-inline-flex gap-2">
+                    <a href="{{ paper.pdf_file.url }}" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm" target="_blank">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>View
+                    </a>
+                {% comment %} Give Edit/Delete and View Option if User is Loggedin and those papers uplaoded by him {% endcomment %}
+                    {% if user.is_authenticated and paper.uploaded_by == user %}
+                        <div class="btn-group shadow-sm" role="group">
+                            <a href="{% url 'edit_paper' paper.pk %}" class="btn btn-sm btn-primary rounded-start-pill px-3" title="Edit Paper">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a href="{% url 'delete_paper' paper.pk %}" class="btn btn-sm btn-danger rounded-end-pill px-3" title="Delete Paper">
+                                <i class="bi bi-trash3"></i>
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center py-5 text-muted bg-light bg-opacity-50">
+                <i class="bi bi-search d-block fs-1 mb-2 opacity-25"></i>
+                <p class="mb-0">No question papers found matching your criteria.</p>
+                <small>Try clearing your filters or selecting a different college.</small>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
     </div>
 </div>
 {% endblock %}
