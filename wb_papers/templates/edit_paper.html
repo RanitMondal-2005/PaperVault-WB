@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="bg-primary p-4 text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="fw-bold mb-0"><i class="bi bi-pencil-square me-2"></i>Edit Paper Details</h4>
+                        <small class="opacity-75">ID: #PV-{{ paper.pk }} | Uploaded on {{ paper.uploaded_at|date:"d M, Y" }}</small>
+                    </div>
+                    <a href="{% url 'papers' %}" class="btn btn-sm btn-light rounded-pill px-3">Cancel</a>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted">Paper Title</label>
+                                {{ form.title }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Subject Name</label>
+                                {{ form.subject_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Subject Code</label>
+                                {{ form.subject_code }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>College</label>
+                                {{ form.college }} 
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">Stream</label>
+                                {{ form.stream }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">Exam Type</label>
+                                {{ form.exam_type }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">Semester</label>
+                                {{ form.semester }}
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">Year</label>
+                                {{ form.year }}
+                            </div>
+
+
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold text-muted">Update PDF File (Leave blank to keep current)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class="bi bi-file-earmark-pdf text-danger"></i></span>
+                                    {{ form.pdf_file }}
+                                </div>
+                                {% if paper.pdf_file %}
+                                    <div class="mt-2 small text-muted">
+                                        Current: <a href="{{ paper.pdf_file.url }}" target="_blank" class="text-primary text-decoration-none">{{ paper.pdf_file.name }}</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column flex-md-row gap-3 mt-5 border-top pt-4">
+                            <button type="submit" class="btn btn-primary px-5 py-3 fw-bold rounded-3 shadow-sm">
+                                <i class="bi bi-save2 me-2"></i> Update Database
+                            </button>
+                            <a href="{% url 'delete_paper' paper.pk %}" class="btn btn-outline-danger px-4 py-3 rounded-3">
+                                <i class="bi bi-trash3 me-2"></i> Delete Paper
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
