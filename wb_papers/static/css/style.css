@@ -187,7 +187,7 @@ footer {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* --- Form Alignment & Styling --- */
+/* --- 8.Form Alignment & Styling --- */
 
 /* Targets the containers in login and registration */
 .form-group-custom input, 
@@ -215,4 +215,24 @@ footer {
 .form-label.d-block {
     margin-bottom: 2px;
     text-align: left; /* Keeps everything aligned to the left wall */
+}
+
+/* 9.Table Design */
+.custom-paper-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.col-sub { text-align: left; padding-left: 20px !important; }
+.col-sem { text-align: center !important; }
+.col-year { text-align: center !important; }
+.col-type { text-align: center !important; }
+.col-clg { text-align: left; }
+.col-action { text-align: right !important; padding-right: 25px !important; }
+
+/* Ensures content doesn't break alignment if it's too long */
+.custom-paper-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
