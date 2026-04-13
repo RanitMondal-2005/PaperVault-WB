@@ -56,10 +56,11 @@
     <thead class="table-dark">
         <tr>
             <th class="col-sub" style="width: 25%;">Subject & Code</th>
-            <th class="col-sem text-center" style="width: 8%;">Sem</th>
-            <th class="col-year text-center" style="width: 10%;">Year</th>
+            <th class="col-sem text-center" style="width: 8%;">Year</th>
+            <th class="col-year text-center" style="width: 10%;">Sem</th>
             <th class="col-type text-center" style="width: 12%;">Type</th>
             <th class="col-clg" style="width: 30%;">College / University</th>
+            <th class="col-clg" style="width: 30%;">Stream</th>
             <th class="col-action text-end" style="width: 25%; padding-right: 20px;">Action</th>
         </tr>
     </thead>
@@ -86,6 +87,12 @@
                 </div>
             </td>
 
+            <td class="col-clg small text-muted">
+                <div class="text-truncate" style="max-width: 180px;" title="{{ paper.stream.name }}">
+                    {{ paper.stream.name }}
+                </div>
+            </td>
+
             <td class="col-action text-end">
                 <div class="d-inline-flex gap-2">
                     <a href="{{ paper.pdf_file.url }}" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm" target="_blank">
@@ -108,7 +115,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="5" class="text-center py-5 text-muted bg-light bg-opacity-50">
+            <td colspan="10" class="text-center py-5 text-muted bg-light bg-opacity-50">
                 <i class="bi bi-search d-block fs-1 mb-2 opacity-25"></i>
                 <p class="mb-0">No question papers found matching your criteria.</p>
                 <small>Try clearing your filters or selecting a different college.</small>
@@ -117,6 +124,30 @@
         {% endfor %}
     </tbody>
 </table>
-    </div>
+{% comment %} Paginator Logic {% endcomment %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if papers.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">&laquo; First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ papers.previous_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Previous</a>
+            </li>
+        {% endif %}
+
+        <li class="page-item active"><span class="page-link">Page {{ papers.number }} of {{ papers.paginator.num_pages }}</span></li>
+
+        {% if papers.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ papers.next_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ papers.paginator.num_pages }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Last &raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+</div>
 </div>
 {% endblock %}
