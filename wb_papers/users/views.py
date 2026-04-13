@@ -18,13 +18,13 @@ def register_view(request):
                 role=role,
                 is_verified=is_verified
             )
-            
+            # means : user registered once will stay logged in : login(request, user)
             login(request, user)
             return redirect('dashboard')
     else:
         form = SignUpForm()
     return render(request, 'registration.html', {'form': form})
 
-# just Integrate the Feature ( Logic still under development)
+# AI DashBoard Page(Logic is written in 'Papers' app)
 def ai_analyzer(request):
     return render(request,'ai_analyzer.html')
