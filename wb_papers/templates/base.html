@@ -39,11 +39,7 @@
                             <i class="bi bi-stars me-1"></i> AI Analyzer
                         </a>
                     </li>
-                    {% if user.is_authenticated and user.profile.role == 'FACULTY' %}
-                    <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'upload' %}">Upload Portal</a>
-                    </li>
-                    {% endif %}
+                {% comment %} Upload Portal Link for Faculty Removed from NavBar {% endcomment %}
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
@@ -55,6 +51,10 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                                 <li><a class="dropdown-item py-2" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a href="{% url 'password_change' %}" class="dropdown-item text-danger">
+                                    <i class="bi bi-key-fill me-2"></i>Change Password
+                                </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{% url 'logout' %}" method="post" class="px-3 py-1">
@@ -79,10 +79,12 @@
                     <div class="d-flex align-items-center">
                         {% if message.tags == 'success' %}
                             <i class="bi bi-check-circle-fill me-2"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
                         {% else %}
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         {% endif %}
-                        {{ message }}
+                        <div>{{ message }}</div>
                     </div>
                     <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -116,7 +118,8 @@
                     <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">Resources</h6>
                     <ul class="list-unstyled small">
                         
-                        <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none hover-white transition">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none hover-white transition">Home</a></li>             
+                        <li class="mb-2"><a href="{% url 'ai_analyzer' %}" class="text-white-50 text-decoration-none hover-white transition">AI Analyzer</a></li>
                         <li class="mb-2"><a href="{% url 'papers' %}" class="text-white-50 text-decoration-none hover-white transition">Search Archive</a></li>
                         <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none hover-white transition">About Us</a></li>
                         <li class="mb-2"><a href="{% url 'contact_us' %}" class="text-white-50 text-decoration-none hover-white transition">Contact Us</a></li>

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,9 +127,18 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Login Redirect
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard' # Where to go after logging in
+LOGIN_URL = 'login' # Where to send users who try to access @login_required pages without being logged in
 
 # Logout Redirect
-LOGOUT_REDIRECT_URL = 'dashboard'
-LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'dashboard' # Where to go after logging out
+LOGOUT_URL = 'logout' 
+
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
+
+# ----- Integrating AI -----
+# Putting the API key from -> Google Ai studio
+OPENROUTER_API_KEY = "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"
