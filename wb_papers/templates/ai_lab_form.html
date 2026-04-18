@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="card shadow border-0 p-4">
+        <h2 class="fw-bold text-primary mb-4"><i class="bi bi-cpu"></i> AI Paper Lab</h2>
+        
+        <form action="{% url 'ai_select_subject' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Select Analysis Goal</label>
+                    <select name="task_type" class="form-select border-primary" id="taskSelect">
+                        <option value="topics">Topic Extraction (Trend Analysis)</option>
+                        <option value="summary">Smart Summary (Common Questions)</option>
+                        <option value="mock_test">Mini Mock Test (MCQ)</option>
+                        <option value="pdf_upload">Manual PDF Analysis (Compare 3 Files)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="dbSection" class="row g-3">
+                <div class="col-md-3"><label class="small fw-bold">Stream</label>
+                    <select name="stream" class="form-select">
+                        <option value="All">All Streams</option>
+                        {% for s in streams %}<option value="{{s.id}}">{{s.name}}</option>{% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3"><label class="small fw-bold">Institution</label>
+                    <select name="institution" class="form-select">
+                        <option value="All">All Universities & Colleges</option>
+                            {% for c in colleges %}
+                                <option value="{{ c }}">{{ c }}</option>
+                            {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2"><label class="small fw-bold">Start Year</label>
+                    <input type="number" name="start_year" class="form-control" value="2022">
+                </div>
+                <div class="col-md-2"><label class="small fw-bold">End Year</label>
+                    <input type="number" name="end_year" class="form-control" value="2026">
+                </div>
+                <div class="col-md-2"><label class="small fw-bold">Semester</label>
+                    <select name="semester" class="form-select">
+                        {% for i in "12345678"|make_list %}<option value="{{i}}">{{i}}</option>{% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div id="uploadSection" class="row g-3 mt-3 d-none">
+                <div class="col-md-4">
+                    <label class="small fw-bold">Paper 1</label>
+                    <input type="file" name="pdf1" class="form-control" accept=".pdf">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Paper 2</label>
+                    <input type="file" name="pdf2" class="form-control" accept=".pdf">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Paper 3</label>
+                    <input type="file" name="pdf3" class="form-control" accept=".pdf">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-4 px-5 rounded-pill">
+                Continue to Analysis <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('taskSelect').onchange = function() {
+        const isUpload = this.value === 'pdf_upload';
+        document.getElementById('dbSection').classList.toggle('d-none', isUpload);
+        document.getElementById('uploadSection').classList.toggle('d-none', !isUpload);
+    };
+</script>
+{% endblock %}

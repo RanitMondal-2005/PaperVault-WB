@@ -1,0 +1,15 @@
+# Ignore OS files
+.DS_Store
+
+# Ignore secrets
+.env
+
+# Ignore database
+db.sqlite3
+
+# Ignore Python/Django artifacts
+__pycache__/
+*.pyc
+
+# Ignore media uploads
+media/papers/

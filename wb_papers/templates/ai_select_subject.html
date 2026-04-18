@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="card shadow border-0 p-4 text-center">
+        <h3 class="fw-bold">Select Subject</h3>
+        <p class="text-muted">We found these subjects in our vault matching your filters.</p>
+        
+        <form action="{% url 'ai_analyze' %}" method="POST">
+            {% csrf_token %}
+            {% for key, value in filters.items %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+            {% endfor %}
+
+            <div class="list-group my-4 text-start">
+                {% for sub in subjects %}
+                <label class="list-group-item d-flex gap-3 py-3">
+                    <input class="form-check-input flex-shrink-0" type="radio" name="selected_subject" value="{{ sub.subject_name }}" required>
+                    <span>
+                        <strong>{{ sub.subject_name }}</strong>
+                        <small class="d-block text-muted">Code: {{ sub.subject_code }}</small>
+                        <div class="d-flex gap-3 mt-1">
+                            <small class="text-muted"><strong>Year:</strong> {{ sub.year }}</small>
+                        </div>
+                    </span>
+                </label>
+                {% empty %}
+                <div class="alert alert-warning">No papers found for these filters. Go back and try a wider range.</div>
+                {% endfor %}
+            </div>
+
+            {% comment %} AI Analysis button {% endcomment %}
+            {% if subjects %} 
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">Analyze Now</button>
+            {% else %}
+            <a href="{% url 'ai_lab' %}" class="btn btn-secondary rounded-pill">Go Back</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
