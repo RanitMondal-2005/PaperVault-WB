@@ -14,10 +14,14 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted text-uppercase">Branch / Stream</label>
-                <select name="stream" class="form-select shadow-none border-primary-subtle">
+                <select name="stream" class="form-select shadow-none border-primary-subtle" id="stream-select">
                     <option value="">Select Stream</option>
                     {% for s in streams %}
-                    <option value="{{s.id}}" {% if request.GET.stream == s.id|stringformat:"s" %}selected{% endif %}>{{s.name}}</option>
+                    <option value="{{s.id}}" 
+                        data-college="{{s.college_id}}"
+                        {% if request.GET.stream == s.id|stringformat:"s" %}selected{% endif %}>
+                        {{s.name}}
+                    </option>
                     {% endfor %}
                 </select>
             </div>
@@ -115,7 +119,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="10" class="text-center py-5 text-muted bg-light bg-opacity-50">
+            <td colspan="7" class="text-center py-5 text-muted bg-light bg-opacity-50">
                 <i class="bi bi-search d-block fs-1 mb-2 opacity-25"></i>
                 <p class="mb-0">No question papers found matching your criteria.</p>
                 <small>Try clearing your filters or selecting a different college.</small>

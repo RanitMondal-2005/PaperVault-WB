@@ -10,9 +10,8 @@
         
         <div class="card-body p-4 p-md-5">
             <div class="ai-content"> 
-                <div id="ai-output">
-                    {{ result }}
-                </div>
+                <div id="ai-output"></div>
+                {{ result|json_script:"ai-raw-result" }}
             </div>
             
             <hr class="my-4 border-secondary opacity-25">
@@ -33,7 +32,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const outputDiv = document.getElementById('ai-output');
-        const rawMarkdown = outputDiv.innerText;
+        const rawMarkdown = JSON.parse(document.getElementById('ai-raw-result').textContent);
         outputDiv.innerHTML = marked.parse(rawMarkdown);
     });
 </script>
