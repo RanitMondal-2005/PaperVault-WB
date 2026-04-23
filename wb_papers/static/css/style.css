@@ -1,65 +1,129 @@
-/* 1. CORE VARIABLES & BASE STYLES */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* --------------------------------------------
+   PAPERVAULT WB — STYLESHEET
+   Structure:
+   1. Core Variables & Base
+   2. Navigation
+   3. Hero Section
+   4. Announcement Ticker
+   5. Buttons
+   6. College Cards
+   7. Footer & Utilities
+   8. Form Styling
+   9. Table Design
+   10. Animations
+   11. AI Analyzer Page
+   12. Responsive Tweaks
+-------------------------------------------- */
+
+/* ── 1. CORE VARIABLES & BASE STYLES ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --nav-footer-bg: #0f172a;      /* Deep Slate */
-    --accent-blue: #2563eb;        /* Royal Blue */
-    --light-blue-bg: #f0f7ff;      /* For Ticker & Back-to-Top */
+    --nav-footer-bg: #0f172a;
+    --accent-blue: #2563eb;
+    --accent-blue-dark: #1d4ed8;
+    --light-blue-bg: #f0f7ff;
     --text-dark: #334155;
-    --border-glow: rgba(37, 99, 235, 0.5); /* Boosted for visibility */
+    --text-muted: #64748b;
+    --border-subtle: rgba(37, 99, 235, 0.15);
+    --card-bg: #ffffff;
+    --body-bg: #f8fafc;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --transition: all 0.25s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 body {
-    background-color: #fcfcfd; 
+    background-color: var(--body-bg);
     color: var(--text-dark);
     font-family: 'Inter', sans-serif;
     letter-spacing: -0.01em;
     margin: 0;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* 2. NAVIGATION (NAVBAR) */
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ── 2. NAVIGATION ── */
 .navbar {
     background-color: var(--nav-footer-bg) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .navbar-brand {
     letter-spacing: -0.5px;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.85;
 }
 
 .nav-link {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: rgba(255, 255, 255, 0.65) !important;
     transition: color 0.2s ease;
     display: flex !important;
     align-items: center !important;
+    padding: 0.4rem 0.75rem !important;
+    border-radius: var(--radius-sm);
 }
 
 .nav-link:hover {
     color: #ffffff !important;
+    background-color: rgba(255,255,255,0.06);
 }
 
-/* 3. HERO SECTION */
+/* Active nav link */
+.nav-link.active {
+    color: #ffffff !important;
+}
+
+/* ── 3. HERO SECTION ── */
 .hero-section {
-    background: #ffffff;
-    padding: 100px 0;
+    background: linear-gradient(160deg, #ffffff 60%, #f0f7ff 100%);
+    padding: 110px 0 90px;
     text-align: center;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #e8f0fe;
 }
 
 .hero-section h1 {
     color: var(--nav-footer-bg);
     font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
 }
 
-/* 4. ANNOUNCEMENT TICKER (FIXED LIGHT BLUE) */
+.hero-section .lead {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* ── 4. ANNOUNCEMENT TICKER ── */
 .ticker-wrapper {
-    background: var(--light-blue-bg) !important; /* Forces the soft blue color */
+    background: var(--light-blue-bg) !important;
     border-top: 1px solid rgba(37, 99, 235, 0.1);
     border-bottom: 1px solid rgba(37, 99, 235, 0.1);
     overflow: hidden;
     white-space: nowrap;
-    padding: 14px 0;
+    padding: 12px 0;
     position: relative;
     z-index: 5;
 }
@@ -67,10 +131,10 @@ body {
 .ticker-text {
     display: inline-block;
     white-space: nowrap;
-    animation: ticker-move 50s linear infinite; 
+    animation: ticker-move 50s linear infinite;
     color: var(--nav-footer-bg);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .ticker-text span {
@@ -78,7 +142,7 @@ body {
 }
 
 @keyframes ticker-move {
-    0% { transform: translateX(100vw); }
+    0%   { transform: translateX(100vw); }
     100% { transform: translateX(-100%); }
 }
 
@@ -86,153 +150,374 @@ body {
     animation-play-state: paused;
 }
 
-/* 5. BUTTONS (FIXED HOVER STATES) */
+/* ── 5. BUTTONS ── */
 .btn-student {
     background-color: var(--accent-blue) !important;
     color: white !important;
     border: 2px solid var(--accent-blue);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: var(--transition);
+    letter-spacing: -0.01em;
 }
 
 .btn-student:hover {
-    background-color: #1d4ed8 !important; /* Darker Blue */
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    background-color: var(--accent-blue-dark) !important;
+    border-color: var(--accent-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
 }
 
 .btn-faculty {
     background-color: transparent !important;
     color: var(--accent-blue) !important;
     border: 2px solid var(--accent-blue);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: var(--transition);
 }
 
 .btn-faculty:hover {
-    background-color: var(--accent-blue) !important; /* Fills with Blue */
-    color: white !important;                         /* Text turns White */
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    background-color: var(--accent-blue) !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
 }
 
-/* 6. COLLEGE GRID & GLOWING CARDS */
-/* --- COLLEGE GRID & FLOATING CARDS --- */
+/* ── 6. COLLEGE CARDS ── */
 .college-card-neon {
-    background: #f8f9fa; 
-    /* 1. Slower duration (0.5s) and 'ease-out' for a silky feel */
-    transition: 
-        transform 0.5s ease-out, 
-        box-shadow 0.5s ease-out, 
-        background-color 0.4s ease, 
-        border-color 0.4s ease !important;
+    background: var(--card-bg);
+    border: 1px solid #e8edf5;
+    border-radius: var(--radius-lg) !important;
+    transition:
+        transform 0.4s ease-out,
+        box-shadow 0.4s ease-out,
+        border-color 0.3s ease;
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
-    border: 1px solid transparent; /* Prevents "jumping" on hover */
 }
 
 .college-card-neon:hover {
-    /* 2. Reduced lift (from 12px to 6px) and REMOVED scale(1.02) to stop the 'popping' */
-    transform: translateY(-6px); 
-    background: #ffffff !important;
+    transform: translateY(-5px);
+    border-color: rgba(37, 99, 235, 0.25) !important;
     z-index: 10;
-    border-color: rgba(37, 99, 235, 0.2) !important;
-    
-    /* 3. Softened Glow: Reduced opacity and increased spread for a 'cloud' effect rather than a 'ring' */
-    box-shadow: 
-        0 10px 20px rgba(15, 23, 42, 0.05),   /* Subtle Depth */
-        0 0 20px rgba(37, 99, 235, 0.15),     /* Faint Blue Halo */
-        0 0 40px rgba(37, 99, 235, 0.25) !important; /* Soft diffused glow */
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.07),
+        0 0 0 1px rgba(37, 99, 235, 0.08),
+        0 0 32px rgba(37, 99, 235, 0.12) !important;
 }
 
-/* 4. Removed the 'Logo Tilt' - it was likely causing the irritation */
 .college-logo-container {
-    transition: transform 0.5s ease-out;
-}
-
-/* 5. Minimal Arrow movement */
-.college-card-neon:hover .transition-arrow {
-    transform: translateX(4px);
     transition: transform 0.4s ease-out;
+    border-radius: var(--radius-sm) !important;
 }
 
-/* 7. FOOTER & UTILITIES */
+/* Arrow slide on card hover */
+.college-card-neon:hover .transition-arrow {
+    transform: translateX(5px);
+    transition: transform 0.3s ease-out;
+}
+
+/* ── 7. FOOTER & UTILITIES ── */
 footer {
     background-color: var(--nav-footer-bg) !important;
-    padding-top: 3rem;
+    padding-top: 3.5rem;
     padding-bottom: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
 
+/* Back to top strip */
 .bg-sky-light {
     background-color: var(--light-blue-bg) !important;
-    border-top: 1px solid #e1effe;
+    border-top: 1px solid #dbeafe;
 }
 
 .back-to-top-link {
     color: var(--accent-blue) !important;
-    font-weight: 700;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: var(--transition);
+    text-decoration: none !important;
 }
 
 .back-to-top-link:hover {
-    color: #1d4ed8 !important;
+    color: var(--accent-blue-dark) !important;
     text-decoration: underline !important;
 }
 
+/* Override Bootstrap's text-white-50 for footer readability */
 .text-white-50 {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgba(255, 255, 255, 0.55) !important;
 }
 
-/* --- 8.Form Alignment & Styling --- */
+/* ── 8. FORM STYLING ── */
 
-/* Targets the containers in login and registration */
-.form-group-custom input, 
+/* Login & Registration form containers */
+.form-group-custom input,
 .registration-form-container input,
 .registration-form-container select {
     display: block;
-    width: 100% !important; /* Forces all boxes to the same width */
-    padding: 0.6rem 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
+    width: 100% !important;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.95rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: var(--radius-sm);
     margin-top: 0.25rem;
-    transition: all 0.2s ease-in-out;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #fdfdfd;
+    color: var(--text-dark);
 }
 
-/* Hover & Focus Effects */
+/* Focus state for forms */
 .form-group-custom input:focus,
-.registration-form-container input:focus {
+.registration-form-container input:focus,
+.registration-form-container select:focus {
     border-color: var(--accent-blue);
     outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    background-color: #fff;
 }
 
-/* Ensures labels are always stacked on top */
+/* Stacked labels */
 .form-label.d-block {
-    margin-bottom: 2px;
-    text-align: left; /* Keeps everything aligned to the left wall */
+    margin-bottom: 3px;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-/* 9.Table Design */
+/* ── 9. TABLE DESIGN ── */
 .custom-paper-table {
     table-layout: fixed;
     width: 100%;
+    font-size: 0.9rem;
 }
 
-.col-sub { text-align: left; padding-left: 20px !important; }
-.col-sem { text-align: center !important; }
+/* Column alignment */
+.col-sub  { text-align: left;   padding-left: 20px !important; }
+.col-sem  { text-align: center !important; }
 .col-year { text-align: center !important; }
 .col-type { text-align: center !important; }
-.col-clg { text-align: left; }
+.col-clg  { text-align: left; }
 .col-action { text-align: right !important; padding-right: 25px !important; }
 
-/* Ensures content doesn't break alignment if it's too long */
+/* Prevent text overflow in table cells */
 .custom-paper-table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    vertical-align: middle;
+    padding-top: 0.85rem !important;
+    padding-bottom: 0.85rem !important;
+}
+
+/* Subtle hover on table rows */
+.custom-paper-table tbody tr:hover {
+    background-color: #f8faff;
+}
+
+/* ── 10. ANIMATIONS ── */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-up {
+    animation: fadeInUp 0.45s ease both;
+}
+
+.animate-fadeIn {
+    animation: fadeInUp 0.35s ease both;
+}
+
+/* ── 11. AI ANALYZER PAGE ── */
+
+/* Feature cards on AI dashboard */
+.ai-feature-card {
+    border: 1.5px solid #e8edf5;
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+}
+
+.ai-feature-card:hover {
+    border-color: var(--border-subtle);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+/* AI result output formatting */
+.ai-content {
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 1.5rem 2rem;
+    border: 1px solid #e8edf5;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--text-dark);
+}
+
+.ai-content h3 {
+    color: var(--nav-footer-bg);
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+
+.ai-content ul {
+    padding-left: 1.4rem;
+}
+
+.ai-content li {
+    margin-bottom: 0.4rem;
+}
+
+/* ── 12. RESPONSIVE TWEAKS ── */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 70px 0 60px;
+    }
+
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .custom-paper-table {
+        font-size: 0.8rem;
+    }
+
+    .col-clg {
+        display: none;
+    }
+
+    footer .row > div:not(:first-child) {
+        margin-top: 1.5rem;
+    }
+}
+
+/* ── HERO BADGE ── */
+.hero-badge {
+    display: inline-block;
+    background: #eff6ff;
+    color: var(--accent-blue);
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 0.3rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* ── HERO ANIMATED BACKGROUND ── */
+.hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(37,99,235,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(37,99,235,0.07) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(37,99,235,0.04) 0%, transparent 40%);
+    z-index: 1;
+    animation: hero-pulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes hero-pulse {
+    0%   { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+    background: #ffffff;
+}
+
+.stat-item {
+    padding: 0.5rem 1rem;
+}
+
+.stat-number {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: var(--accent-blue);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+}
+
+/* ── COLLEGE LOGO SLIDESHOW STRIP ── */
+.logo-strip-wrapper {
+    background: #fafbfc;
+}
+
+.logo-strip-track-outer {
+    overflow: hidden;
+    width: 100%;
+}
+
+.logo-strip-track {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    width: max-content;
+    animation: logo-scroll 18s linear infinite;
+}
+
+.logo-strip-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes logo-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.logo-strip-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 60px;
+    flex-shrink: 0;
+    filter: grayscale(30%);
+    opacity: 0.8;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.logo-strip-item:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+.logo-strip-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.logo-strip-fallback {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    background: #eff6ff;
+    border-radius: 8px;
+    padding: 0.4rem 0.6rem;
+    letter-spacing: 0.05em;
 }
