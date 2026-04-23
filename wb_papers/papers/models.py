@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-# REMOVE THIS LINE: from colleges.models import College, Stream
 
 class Paper(models.Model):
     EXAM_TYPES = [
@@ -11,7 +10,6 @@ class Paper(models.Model):
     
     title = models.CharField(max_length=200)
     
-    # CHANGE TO STRINGS HERE:
     college = models.ForeignKey('colleges.College', on_delete=models.CASCADE)
     stream = models.ForeignKey('colleges.Stream', on_delete=models.CASCADE)
     
