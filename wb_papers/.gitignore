@@ -10,6 +10,11 @@ db.sqlite3
 # Ignore Python/Django artifacts
 __pycache__/
 *.pyc
+*.pyo
 
 # Ignore media uploads
 media/papers/
+
+# Mac OS
+.DS_Store
+__MACOSX/

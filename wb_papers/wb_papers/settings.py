@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
 
@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6)os1b5-8cv*s1^=ti7qg&=-*89c93%ng1v5%+9!kvrg+h7(h7'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-6)os1b5-8cv*s1^=ti7qg&=-*89c93%ng1v5%+9!kvrg+h7(h7')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -124,7 +124,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Login Redirect
 LOGIN_REDIRECT_URL = 'dashboard' # Where to go after logging in
@@ -141,4 +141,4 @@ MESSAGE_TAGS = {
 
 # ----- Integrating AI -----
 # Putting the API key from -> Google Ai studio
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
