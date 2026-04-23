@@ -10,7 +10,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.db.models import Q
 from .ai_utils import extract_text_from_pdf, get_gemini_analysis
-from django.contrib.auth.decorators import login_required
 
 
 def dashboard(request):

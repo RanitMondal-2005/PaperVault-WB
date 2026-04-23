@@ -22,17 +22,18 @@ class PaperUploadForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # 1.2: FIX: Override the label display. 
-        # This stops it from showing "Stream - College Name" and shows ONLY "Stream Name"
         self.fields['stream'].label_from_instance = lambda obj: f"{obj.name}"
+        current_year = datetime.date.today().year
+        self.fields['year'].choices = [('', '--- Select Year ---')] + [(r, r) for r in range(current_year, 2014, -1)]
 
     # 2. Created Dropdowns for Semester (1-8)
     SEM_CHOICES = [('', '--- Select Semester ---')] + [(i, f"Semester {i}") for i in range(1, 9)]
     
     # 3. Created Dropdowns for Year (Current to 2015)
-    current_year = datetime.date.today().year
-    YEAR_CHOICES = [('', '--- Select Year ---')] + [(r, r) for r in range(current_year, 2014, -1)]
-
+    year = forms.ChoiceField(
+        choices=[], 
+        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
+    )
     # 4. Define fields explicitly to force Dropdowns and 'Required' tooltips
     exam_type = forms.ChoiceField(
         choices=EXAM_CHOICES, 
@@ -40,10 +41,6 @@ class PaperUploadForm(forms.ModelForm):
     )
     semester = forms.ChoiceField(
         choices=SEM_CHOICES, 
-        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
-    )
-    year = forms.ChoiceField(
-        choices=YEAR_CHOICES, 
         widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'required': 'true'})
     )
     # FIX: Added FileExtensionValidator to ensure only PDFs are accepted

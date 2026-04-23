@@ -6,9 +6,18 @@ def about_view(request):
 
 def contact_us(request):
     if request.method == "POST":
-        # The "Illusion" Logic: 
-        # We pretend to process the data, then trigger the success message.
-        messages.success(request, "Success! Your inquiry has been submitted. Our team will review your request and get back to you within 24-48 business hours. Thank you for your patience!")
-        return redirect('dashboard') # This reloads the page to show the alert
-    
-    return render(request,'contact_us.html')
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        message_body = request.POST.get('message', '').strip()
+
+        if not name or not email or not message_body:
+            messages.error(request, "Please fill in all fields before submitting.")
+            return render(request, 'contact_us.html')
+
+        # Form is valid — show success
+        # To send real emails later, configure EMAIL_BACKEND in settings.py
+        # For Now Only the Illusion Logic
+        messages.success(request, "Thank you for reaching out! We'll get back to you within 24-48 hours.")
+        return redirect('dashboard')
+
+    return render(request, 'contact_us.html')

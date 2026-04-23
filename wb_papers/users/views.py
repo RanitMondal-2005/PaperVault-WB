@@ -27,4 +27,4 @@ def register_view(request):
 
 # AI DashBoard Page(Logic is written in 'Papers' app)
 def ai_analyzer(request):
-    return render(request,'ai_analyzer.html')
+    return render(request, 'ai_analyzer.html')
