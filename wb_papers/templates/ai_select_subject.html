@@ -30,11 +30,27 @@
 
             {% comment %} AI Analysis button {% endcomment %}
             {% if subjects %} 
-            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">Analyze Now</button>
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5" id="analyzeBtn">
+                <span id="btnText">Analyze Now</span>
+                <span id="btnLoading" class="d-none">
+                    <span class="spinner-border spinner-border-sm me-2"></span> Analyzing...
+                </span>
+            </button>
             {% else %}
             <a href="{% url 'ai_lab' %}" class="btn btn-secondary rounded-pill">Go Back</a>
             {% endif %}
         </form>
     </div>
 </div>
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        document.querySelector('form').addEventListener('submit', function() {
+            document.getElementById('btnText').classList.add('d-none');
+            document.getElementById('btnLoading').classList.remove('d-none');
+            document.getElementById('analyzeBtn').disabled = true;
+        });
+    </script>
+{% endblock %}
+
 {% endblock %}

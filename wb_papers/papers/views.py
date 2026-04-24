@@ -188,7 +188,7 @@ def ai_analyze(request):
         combined_text = ""
 
         # Logic for stored papers
-        if task in ['topics', 'summary']:
+        if task in ['topics', 'summary','mock_test']:
             subject_name = request.POST.get('selected_subject')
             papers = Paper.objects.filter(
                 subject_name=subject_name,
