@@ -14,6 +14,7 @@ __pycache__/
 
 # Ignore media uploads
 media/papers/
+media/college_logos/
 
 # Mac OS
 .DS_Store
