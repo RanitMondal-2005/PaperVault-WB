@@ -28,8 +28,8 @@ if (statEl) {
 }
 
 // ── STREAM FILTER BY COLLEGE ──
-const collegeSelect = document.getElementById('id_college') || document.querySelector('select[name="college"]');
-const streamSelect = document.getElementById('stream-select');
+const collegeSelect = document.getElementById('collegeSelect');
+const streamSelect = document.getElementById('streamSelect');
 
 function filterStreams() {
     if (!collegeSelect || !streamSelect) return;
@@ -55,4 +55,38 @@ function filterStreams() {
 if (collegeSelect) {
     collegeSelect.addEventListener('change', filterStreams);
     filterStreams(); // run on page load to respect pre-selected filters
+}
+
+// ── STREAM FILTER FOR AI LAB (matches by name, not ID) ──
+document.addEventListener('DOMContentLoaded', function() {
+    const aiCollegeSelect = document.querySelector('#dbSection #collegeSelect');
+    const aiStreamSelect = document.querySelector('#dbSection #streamSelect');
+
+    if (aiCollegeSelect && aiStreamSelect) {
+        function filterAiStreams() {
+            const selected = aiCollegeSelect.value;
+            aiStreamSelect.querySelectorAll('option').forEach(opt => {
+                if (!opt.value || opt.value === 'All') return;
+                if (!selected || selected === 'All' || opt.dataset.college === selected) {
+                    opt.style.display = '';
+                } else {
+                    opt.style.display = 'none';
+                }
+            });
+            aiStreamSelect.value = 'All';
+        }
+        aiCollegeSelect.addEventListener('change', filterAiStreams);
+        filterAiStreams();
+    }
+});
+
+// ── SHOW MORE COLLEGES ON DASHBOARD ──
+const showMoreBtn = document.getElementById('showMoreBtn');
+if (showMoreBtn) {
+    showMoreBtn.addEventListener('click', function() {
+        document.querySelectorAll('.college-card-wrapper').forEach(card => {
+            card.style.display = '';
+        });
+        this.style.display = 'none';
+    });
 }

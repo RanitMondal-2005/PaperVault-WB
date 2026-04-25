@@ -5,7 +5,7 @@
         <form method="GET" action="{% url 'papers' %}" class="row g-3 align-items-end">
             <div class="col-md-4">
                 <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
-                <select name="college" class="form-select shadow-none border-primary-subtle">
+                <select name="college" class="form-select shadow-none border-primary-subtle" id="collegeSelect">
                     <option value="">All WB Colleges & Universities</option>
                     {% for c in colleges %}
                     <option value="{{c.id}}" {% if request.GET.college == c.id|stringformat:"s" %}selected{% endif %}>{{c.name}}</option>
@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted text-uppercase">Branch / Stream</label>
-                <select name="stream" class="form-select shadow-none border-primary-subtle" id="stream-select">
+                <select name="stream" class="form-select shadow-none border-primary-subtle" id="streamSelect">
                     <option value="">Select Stream</option>
                     {% for s in streams %}
                     <option value="{{s.id}}" 

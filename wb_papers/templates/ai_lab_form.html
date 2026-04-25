@@ -20,20 +20,23 @@
             </div>
 
             <div id="dbSection" class="row g-3">
-                <div class="col-md-3"><label class="small fw-bold">Stream</label>
-                    <select name="stream" class="form-select">
-                        <option value="All">All Streams</option>
-                        {% for s in streams %}<option value="{{s.id}}">{{s.name}}</option>{% endfor %}
-                    </select>
-                </div>
                 <div class="col-md-3"><label class="small fw-bold">Institution</label>
-                    <select name="institution" class="form-select">
+                    <select name="institution" class="form-select" id="collegeSelect">
                         <option value="All">All Universities & Colleges</option>
                             {% for c in colleges %}
                                 <option value="{{ c }}">{{ c }}</option>
                             {% endfor %}
                     </select>
                 </div>
+
+                <div class="col-md-3"><label class="small fw-bold">Stream</label>
+                    <select name="stream" class="form-select" id="streamSelect">
+                        <option value="All">All Streams</option>
+                        {% for s in streams %}<option value="{{s.id}}" data-college="{{s.college.name}}">{{s.name}}</option>{% endfor %}
+                        {% comment %} data-college="{{s.college.name}}",, this data-college is not inbuilt html attribute,we used extra custom attribute to filter streams by college for JS {% endcomment %}
+                    </select>
+                </div>
+                
                 <div class="col-md-2"><label class="small fw-bold">Start Year</label>
                     <input type="number" name="start_year" class="form-control" value="2022">
                 </div>
