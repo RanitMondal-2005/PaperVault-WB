@@ -8,6 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls), 
     path('', include('papers.urls')),
     path('users/', include('users.urls')),
+    # For Materials Page
+    path('materials/', include('materials.urls')),
     # about us page
     path('about/', views.about_view, name='about'),
     # contact us page

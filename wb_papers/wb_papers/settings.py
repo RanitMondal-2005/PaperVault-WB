@@ -28,7 +28,7 @@ if env_path.exists():
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-6)os1b5-8cv*s1^=ti7qg&=-*89c93%ng1v5%+9!kvrg+h7(h7')
+SECRET_KEY = os.environ.get('SECRET_KEY') # Secret Key is kept in .env file
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 
     'users',
     'papers',
-    'colleges'
+    'colleges',
+    'materials',
 ]
 
 MIDDLEWARE = [
@@ -116,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata' # Time Zone Changed from UTC to Asia/Kolkata for our website
 
 USE_I18N = True
 
