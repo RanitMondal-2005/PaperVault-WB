@@ -60,7 +60,7 @@
                                 <label class="form-label small fw-bold text-muted">Update PDF File (Leave blank to keep current)</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white"><i class="bi bi-file-earmark-pdf text-danger"></i></span>
-                                    {{ form.pdf_file }}
+                                    <input type="file" name="pdf_file" accept=".pdf" class="form-control">
                                 </div>
                                 {% if paper.pdf_file %}
                                     <div class="mt-2 small text-muted">

@@ -99,21 +99,35 @@ def edit_paper(request, pk):
         return redirect('papers')
 
     if request.method == 'POST':
-        # NOTE -> Without instance: You have to manually write-> paper.title = request.POST.get('title') and for all other feilds
         form = PaperUploadForm(request.POST, request.FILES, instance=paper)
-        # NOTE -> FOR NOW : UPLOADING PDF IS ALSO COMPULSORY -> LATER WE WILL UPDATE IT
-        # HACK: If Faculty didn't upload a new pdf file, keep the old one i.e, Updating PDF is optional During Edits
+        # If faculty didn't upload a new PDF, don't make it mandatory
         if not request.FILES.get('pdf_file'):
             form.fields['pdf_file'].required = False
-        # Check Forms validation    
         if form.is_valid():
-            form.save() # save changes to DB
+            updated_paper = form.save(commit=False)
+            if not request.FILES.get('pdf_file'):
+                # No new file uploaded — update all other fields only
+                # Using queryset.update() instead of .save() so Django
+                # never touches the pdf_file column in the DB
+                Paper.objects.filter(pk=paper.pk).update(
+                    title=updated_paper.title,
+                    subject_name=updated_paper.subject_name,
+                    subject_code=updated_paper.subject_code,
+                    college=updated_paper.college,
+                    stream=updated_paper.stream,
+                    exam_type=updated_paper.exam_type,
+                    year=updated_paper.year,
+                    semester=updated_paper.semester,
+                )
+            else:
+                # New paper pdf file uploaded — so, save everything including the new PDF
+                updated_paper.save()
             messages.success(request, f"Changes saved for {paper.subject_code}!")
             return redirect('dashboard')
     else:
+        # GET request — load the form pre-filled with existing paper data
         form = PaperUploadForm(instance=paper)
-        # On GET request, the file isn't mandatory to see the page
-        # Even if Faculty has those prev uploaded papers in diff device then also they can change/view 
+        # PDF not required on GET so faculty can view/edit without re-uploading
         form.fields['pdf_file'].required = False
     
     return render(request, 'edit_paper.html', {'form': form, 'paper': paper})
