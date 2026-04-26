@@ -28,6 +28,12 @@
                 <a href="{% url 'upload' %}" class="btn btn-faculty btn-lg px-5">
                     <i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload New Paper
                 </a>
+                <a href="{% url 'upload_material' %}" class="btn btn-faculty btn-lg px-5">
+                    <i class="bi bi-journal-plus me-2"></i>Upload Material
+                </a>
+                <a href="{% url 'materials' %}" class="btn btn-faculty btn-lg px-5">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Your Materials
+                </a>
             {% else %}
                 {% if user.is_authenticated and not user.profile.is_verified %}
                     <div class="alert alert-warning">
@@ -147,7 +153,36 @@
         </div>
     </div>
 </div>
-
+<!-- ── WHAT YOU CAN FIND HERE ── -->
+<div class="container my-5">
+    <h4 class="fw-bold mb-4 border-start border-primary border-4 ps-3">What You Can Find Here</h4>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                <i class="bi bi-file-earmark-text text-primary fs-1 mb-3"></i>
+                <h6 class="fw-bold">Question Papers</h6>
+                <p class="text-muted small mb-3">Previous year semester and internal exam papers from verified faculty across WB colleges.</p>
+                <a href="{% url 'papers' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-auto">Browse Papers</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                <i class="bi bi-journal-richtext text-success fs-1 mb-3"></i>
+                <h6 class="fw-bold">Study Materials</h6>
+                <p class="text-muted small mb-3">Notes, assignments and placement resources shared directly by faculty members for free.</p>
+                <a href="{% url 'materials' %}" class="btn btn-outline-success btn-sm rounded-pill px-4 mt-auto">Browse Materials</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
+                <i class="bi bi-stars text-warning fs-1 mb-3"></i>
+                <h6 class="fw-bold">AI Paper Lab</h6>
+                <p class="text-muted small mb-3">Let AI analyze papers, extract key topics, generate summaries and create mock tests instantly.</p>
+                <a href="{% url 'ai_analyzer' %}" class="btn btn-outline-warning btn-sm rounded-pill px-4 mt-auto">Try AI Lab</a>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- ── PARTICIPATING INSTITUTES CARDS ── -->
 <div class="container my-5">
     <h4 class="fw-bold mb-4 border-start border-primary border-4 ps-3">Explore by Institute</h4>

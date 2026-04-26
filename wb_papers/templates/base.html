@@ -39,7 +39,11 @@
                             <i class="bi bi-stars me-1"></i> AI Analyzer
                         </a>
                     </li>
-                {% comment %} Upload Portal Link for Faculty Removed from NavBar {% endcomment %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'materials' %}">
+                            <i class="bi bi-journal-text me-1"></i>Materials
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="d-flex align-items-center gap-3">
@@ -121,6 +125,7 @@
                         <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none hover-white transition">Home</a></li>             
                         <li class="mb-2"><a href="{% url 'ai_analyzer' %}" class="text-white-50 text-decoration-none hover-white transition">AI Analyzer</a></li>
                         <li class="mb-2"><a href="{% url 'papers' %}" class="text-white-50 text-decoration-none hover-white transition">Search Archive</a></li>
+                        <li class="mb-2"><a href="{% url 'materials' %}" class="text-white-50 text-decoration-none hover-white transition">Study Materials</a></li>
                         <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none hover-white transition">About Us</a></li>
                         <li class="mb-2"><a href="{% url 'contact_us' %}" class="text-white-50 text-decoration-none hover-white transition">Contact Us</a></li>
                     </ul>

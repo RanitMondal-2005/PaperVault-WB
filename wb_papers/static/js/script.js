@@ -90,3 +90,44 @@ if (showMoreBtn) {
         this.style.display = 'none';
     });
 }
+
+// ── STREAM FILTER FOR MATERIALS PAGE ──
+document.addEventListener('DOMContentLoaded', function() {
+    const matCollegeSelect = document.getElementById('matCollegeSelect');
+    const matStreamSelect = document.getElementById('matStreamSelect');
+
+    if (matCollegeSelect && matStreamSelect) {
+        function filterMatStreams() {
+            const selected = matCollegeSelect.value;
+            matStreamSelect.querySelectorAll('option').forEach(opt => {
+                if (!opt.value) return;
+                if (!selected || opt.dataset.college === selected) {
+                    opt.style.display = '';
+                } else {
+                    opt.style.display = 'none';
+                }
+            });
+            matStreamSelect.value = '';
+        }
+        matCollegeSelect.addEventListener('change', filterMatStreams);
+        filterMatStreams();
+    }
+});
+
+// ── UPLOAD MATERIAL: Hide college/stream/semester for Placement type ──
+document.addEventListener('DOMContentLoaded', function() {
+    const materialTypeSelect = document.getElementById('materialTypeSelect');
+    const collegeStreamSection = document.getElementById('collegeStreamSection');
+
+    if (materialTypeSelect && collegeStreamSection) {
+        function toggleCollegeStream() {
+            if (materialTypeSelect.value === 'PLACEMENT') {
+                collegeStreamSection.style.display = 'none';
+            } else {
+                collegeStreamSection.style.display = '';
+            }
+        }
+        materialTypeSelect.addEventListener('change', toggleCollegeStream);
+        toggleCollegeStream(); // run on load
+    }
+});
