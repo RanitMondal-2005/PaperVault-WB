@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 mt-4" style="max-width: 500px;">
+    <div class="card shadow-sm border-0 p-4 text-center">
+
+        <i class="bi bi-trash3 text-danger mb-3" style="font-size: 3rem;"></i>
+        <h4 class="fw-bold mb-1">Delete Material</h4>
+        <p class="text-muted mb-1">Are you sure you want to delete:</p>
+        <p class="fw-bold text-dark">{{ material.title }}</p>
+        <p class="small text-muted">{{ material.subject_name }} — Sem {{ material.semester }}</p>
+
+        <div class="alert alert-danger small py-2">
+            This action is permanent and cannot be undone.
+        </div>
+
+        <form method="POST" class="d-flex gap-3 justify-content-center mt-3">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">
+                <i class="bi bi-trash3 me-1"></i> Yes, Delete
+            </button>
+            <a href="{% url 'materials' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                Cancel
+            </a>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

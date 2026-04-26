@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Filter Card -->
+    <div class="card shadow-sm border-0 mb-4 p-3 animate-fadeIn">
+        <form method="GET" action="{% url 'materials' %}" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted text-uppercase">Institution</label>
+                <select name="college" class="form-select shadow-none border-primary-subtle" id="matCollegeSelect">
+                    <option value="">All Colleges</option>
+                    {% for c in colleges %}
+                        <option value="{{c.id}}" {% if request.GET.college == c.id|stringformat:"s" %}selected{% endif %}>{{c.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted text-uppercase">Stream</label>
+                <select name="stream" class="form-select shadow-none border-primary-subtle" id="matStreamSelect">
+                    <option value="">All Streams</option>
+                    {% for s in streams %}
+                        <option value="{{s.id}}"
+                            data-college="{{s.college_id}}"
+                            {% if request.GET.stream == s.id|stringformat:"s" %}selected{% endif %}>
+                            {{s.name}}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted text-uppercase">Semester</label>
+                <select name="semester" class="form-select shadow-none border-primary-subtle">
+                    <option value="">All Sems</option>
+                    {% for i in "12345678" %}
+                        <option value="{{forloop.counter}}" {% if request.GET.semester == forloop.counter|stringformat:"s" %}selected{% endif %}>Sem {{forloop.counter}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted text-uppercase">Type</label>
+                <select name="material_type" class="form-select shadow-none border-primary-subtle">
+                    <option value="">All Types</option>
+                    <option value="NOTES" {% if request.GET.material_type == 'NOTES' %}selected{% endif %}>Notes</option>
+                    <option value="ASSIGNMENT" {% if request.GET.material_type == 'ASSIGNMENT' %}selected{% endif %}>Assignment</option>
+                    <option value="PLACEMENT" {% if request.GET.material_type == 'PLACEMENT' %}selected{% endif %}>Placement Notes</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="bi bi-filter-circle me-1"></i>Filter
+                    </button>
+                    <a href="{% url 'materials' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Materials Table -->
+    <div class="table-responsive bg-white p-3 shadow-sm rounded border">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:28%;">Subject</th>
+                    <th class="text-center" style="width:12%;">Type</th>
+                    <th class="text-center" style="width:8%;">Sem</th>
+                    <th style="width:22%;">College</th>
+                    <th style="width:18%;">Stream</th>
+                    <th class="text-end" style="width:12%; padding-right:20px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mat in materials %}
+                <tr>
+                    <td>
+                        <div class="fw-bold text-dark">{{ mat.title }}</div>
+                        <div class="small text-muted">{{ mat.subject_name }}</div>
+                    </td>
+                    <td class="text-center">
+                        {% if mat.material_type == 'NOTES' %}
+                            <span class="badge bg-success-subtle text-success border-0 px-2">Notes</span>
+                        {% elif mat.material_type == 'ASSIGNMENT' %}
+                            <span class="badge bg-warning-subtle text-warning border-0 px-2">Assignment</span>
+                        {% else %}
+                            <span class="badge bg-primary-subtle text-primary border-0 px-2">Placement</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center text-secondary">{{ mat.semester|default:"—" }}</td>
+                    <td class="small text-muted">
+                        <div class="text-truncate" style="max-width:180px;">
+                            {{ mat.college.name|default:"—" }}
+                        </div>
+                    </td>
+                    <td class="small text-muted">
+                        <div class="text-truncate" style="max-width:150px;">
+                            {{ mat.stream.name|default:"—" }}
+                        </div>
+                    </td>
+                    <td class="text-end pe-3">
+                        <div class="d-inline-flex gap-2">
+                            <a href="{{ mat.pdf_file.url }}" class="btn btn-sm btn-outline-success rounded-pill px-3" target="_blank">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>View
+                            </a>
+                            {% if user.is_authenticated and mat.uploaded_by == user %}
+                                <a href="{% url 'edit_material' mat.pk %}" class="btn btn-sm btn-primary rounded-pill px-3">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="{% url 'delete_material' mat.pk %}" class="btn btn-sm btn-danger rounded-pill px-3">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted bg-light bg-opacity-50">
+                        <i class="bi bi-journal-x d-block fs-1 mb-2 opacity-25"></i>
+                        <p class="mb-0">No study materials found.</p>
+                        <small>Try clearing your filters or check back later.</small>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Paginator -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if materials.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ materials.previous_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">Previous</a>
+                    </li>
+                {% endif %}
+                <li class="page-item active">
+                    <span class="page-link">Page {{ materials.number }} of {{ materials.paginator.num_pages }}</span>
+                </li>
+                {% if materials.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ materials.next_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ materials.paginator.num_pages }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">Last &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
