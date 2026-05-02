@@ -22,26 +22,39 @@
 
         <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
             {% if user.is_authenticated and user.profile.role == 'FACULTY' %}
-                <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Your Papers
-                </a>
-                <a href="{% url 'upload' %}" class="btn btn-faculty btn-lg px-5">
-                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload New Paper
-                </a>
-                <a href="{% url 'upload_material' %}" class="btn btn-faculty btn-lg px-5">
-                    <i class="bi bi-journal-plus me-2"></i>Upload Material
-                </a>
-                <a href="{% url 'materials' %}" class="btn btn-faculty btn-lg px-5">
-                    <i class="bi bi-pencil-square me-2"></i>Edit Your Materials
-                </a>
+                {% if user.profile.is_verified %}
+                    <a href="{% url 'upload' %}" class="btn btn-student btn-lg px-5">
+                        <i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload Paper
+                    </a>
+                    <a href="{% url 'upload_material' %}" class="btn btn-faculty btn-lg px-5">
+                        <i class="bi bi-journal-plus me-2"></i>Upload Material
+                    </a>
+                {% else %}
+                    <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5">
+                        <i class="bi bi-journal-text me-2"></i>Browse Papers
+                    </a>
+                {% endif %}
+                <p class="text-muted small mt-3 mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    To edit or delete your uploads, visit 
+                    <a href="{% url 'papers' %}" class="text-primary text-decoration-none fw-bold">Archives</a> or 
+                    <a href="{% url 'materials' %}" class="text-primary text-decoration-none fw-bold">Materials</a> 
+                    — your uploads will show edit options there.
+                </p>
+                
             {% else %}
                 {% if user.is_authenticated and not user.profile.is_verified %}
                     <div class="alert alert-warning">
                         Your account is not verified yet. Please wait for admin verification.
                     </div>
-                    <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5">
-                        <i class="bi bi-journal-text me-1"></i>View Papers
-                    </a>
+                    <div>
+                        <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5">
+                            <i class="bi bi-journal-text me-1"></i>View Papers
+                        </a>
+                        <a href="{% url 'materials' %}" class="btn btn-secondary btn-lg px-5">
+                            <i class="bi bi-journal-text me-1"></i>View Materials
+                        </a>
+                    </div>
                 {% else %}
                     <a href="{% url 'papers' %}" class="btn btn-student btn-lg px-5">
                         <i class="bi bi-journal-text me-2"></i>I am Student
@@ -71,6 +84,7 @@
                 <span class="small fw-medium text-success">
                     <i class="bi bi-patch-check-fill me-2"></i>Account Status: <strong>Verified Faculty</strong>
                 </span>
+                <div class="text-muted" style="font-size:0.75rem;">You can upload and manage papers and study materials.</div>
                 <span class="small text-muted">
                     <i class="bi bi-shield-fill-check me-1 text-success"></i> Permissions: <span class="text-success">Full Access</span>
                 </span>
@@ -169,7 +183,7 @@
             <div class="card border-0 shadow-sm rounded-4 p-4 h-100 text-center">
                 <i class="bi bi-journal-richtext text-success fs-1 mb-3"></i>
                 <h6 class="fw-bold">Study Materials</h6>
-                <p class="text-muted small mb-3">Notes, assignments and placement resources shared directly by faculty members for free.</p>
+                <p class="text-muted small mb-3">Notes, assignments, lab manuals and placement resources shared directly by faculty members for free.</p>
                 <a href="{% url 'materials' %}" class="btn btn-outline-success btn-sm rounded-pill px-4 mt-auto">Browse Materials</a>
             </div>
         </div>

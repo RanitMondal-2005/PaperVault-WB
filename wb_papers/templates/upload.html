@@ -26,9 +26,19 @@
                                 <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
                                 {{ form.college }}
                             </div>
+                            {% comment %} Stream / Department We will render a custom select box for this field manually {% endcomment %}
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small text-muted text-uppercase">Stream / Department</label>
-                                {{ form.stream }}
+                                <select name="stream" id="uploadStreamSelect" class="form-select shadow-none border-primary-subtle" required>
+                                    <option value="">--- Select Stream ---</option>
+                                    {% for stream in form.stream.field.queryset %}
+                                        <option value="{{ stream.id }}"
+                                            data-college="{{ stream.college_id }}"
+                                            {% if form.stream.value == stream.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ stream.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
                             </div>
 
                             <div class="col-md-12 mt-4"><h6 class="text-primary fw-bold text-uppercase small">2. Subject & Exam Info</h6></div>

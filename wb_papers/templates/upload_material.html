@@ -38,18 +38,29 @@
                     {{ form.subject_name }}
                 </div>
 
-                <!-- College/Stream/Semester — hidden for placement -->
-                <div id="collegeStreamSection" class="col-12">
+                <!-- only Semester — hidden for placement -->
+                <div class="col-12">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label fw-bold small text-muted text-uppercase">College</label>
                             {{ form.college }}
                         </div>
+                        {% comment %} Stream / Department We will render a custom select box for this field manually {% endcomment %}
                         <div class="col-md-4">
                             <label class="form-label fw-bold small text-muted text-uppercase">Stream</label>
-                            {{ form.stream }}
+                                <select name="stream" id="uploadStreamSelect" class="form-select shadow-none border-primary-subtle">
+                                    <option value="">--- Select Stream ---</option>
+                                    {% for stream in form.stream.field.queryset %}
+                                        <option value="{{ stream.id }}"
+                                            data-college="{{ stream.college_id }}"
+                                            {% if form.stream.value == stream.id|stringformat:"s" %}selected{% endif %}>
+                                            {{ stream.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="uploadSemesterField">
                             <label class="form-label fw-bold small text-muted text-uppercase">Semester</label>
                             {{ form.semester }}
                         </div>
@@ -63,9 +74,14 @@
 
                 <div class="col-12">
                     <label class="form-label fw-bold small text-muted text-uppercase">PDF File</label>
-                    {{ form.pdf_file }}
+                    <div class="p-4 border border-dashed rounded-3 bg-light text-center">
+                        <i class="bi bi-file-earmark-pdf fs-2 text-danger mb-2 d-block"></i>
+                        <div class="input-group">
+                            {{ form.pdf_file }}
+                        </div>
+                        <div class="mt-2 text-muted small">Only PDF files up to 5MB.</div>
+                    </div>
                 </div>
-            </div>
 
             <div class="d-flex gap-3 mt-4">
                 <button type="submit" class="btn btn-primary px-5 rounded-pill fw-bold">

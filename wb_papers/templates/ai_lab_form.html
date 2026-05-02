@@ -20,6 +20,14 @@
             </div>
 
             <div id="dbSection" class="row g-3">
+                <div class="col-md-2"><label class="small fw-bold">Type</label>
+                    <select name="exam_type" class="form-select">
+                        <option value="All">All Types</option>
+                        <option value="INTERNAL">Internal / CA</option>
+                        <option value="SEMESTER">Semester (End-Sem)</option>
+                        <option value="PRACTICAL">Practical</option>
+                    </select>
+                </div>
                 <div class="col-md-3"><label class="small fw-bold">Institution</label>
                     <select name="institution" class="form-select" id="collegeSelect">
                         <option value="All">All Universities & Colleges</option>
@@ -28,8 +36,7 @@
                             {% endfor %}
                     </select>
                 </div>
-
-                <div class="col-md-3"><label class="small fw-bold">Stream</label>
+                <div class="col-md-2"><label class="small fw-bold">Stream</label>
                     <select name="stream" class="form-select" id="streamSelect">
                         <option value="All">All Streams</option>
                         {% for s in streams %}<option value="{{s.id}}" data-college="{{s.college.name}}">{{s.name}}</option>{% endfor %}
@@ -43,7 +50,7 @@
                 <div class="col-md-2"><label class="small fw-bold">End Year</label>
                     <input type="number" name="end_year" class="form-control" value="2026">
                 </div>
-                <div class="col-md-2"><label class="small fw-bold">Semester</label>
+                <div class="col-md-1"><label class="small fw-bold">Semester</label>
                     <select name="semester" class="form-select">
                         {% for i in "12345678"|make_list %}<option value="{{i}}">{{i}}</option>{% endfor %}
                     </select>
@@ -51,6 +58,7 @@
             </div>
 
             <div id="uploadSection" class="row g-3 mt-3 d-none">
+                
                 <div class="col-md-4">
                     <label class="small fw-bold">Paper 1</label>
                     <input type="file" name="pdf1" class="form-control" accept=".pdf">
@@ -63,20 +71,35 @@
                     <label class="small fw-bold">Paper 3</label>
                     <input type="file" name="pdf3" class="form-control" accept=".pdf">
                 </div>
+                <div class="col-md-12">
+                    <small class="fw-bold" style="color: blue">Upload Papers (PDF) within 5MB.</small>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-4 px-5 rounded-pill">
-                Continue to Analysis <i class="bi bi-arrow-right ms-2"></i>
+            <button type="submit" class="btn btn-primary mt-4 px-5 rounded-pill" id="continueBtn">
+                <span id="continueBtnText">Continue to Analysis <i class="bi bi-arrow-right ms-2"></i></span>
+                <span id="continueBtnLoading" class="d-none">
+                    <span class="spinner-border spinner-border-sm me-2"></span> Loading...
+                </span>
             </button>
         </form>
     </div>
 </div>
 
-<script>
-    document.getElementById('taskSelect').onchange = function() {
-        const isUpload = this.value === 'pdf_upload';
-        document.getElementById('dbSection').classList.toggle('d-none', isUpload);
-        document.getElementById('uploadSection').classList.toggle('d-none', !isUpload);
-    };
-</script>
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        document.getElementById('taskSelect').onchange = function() {
+            const isUpload = this.value === 'pdf_upload';
+            document.getElementById('dbSection').classList.toggle('d-none', isUpload);
+            document.getElementById('uploadSection').classList.toggle('d-none', !isUpload);
+        };
+    </script>
+{% comment %} This above JS part is essential because :-
+When the user changes the "Select Analysis Goal" dropdown:
+If they select "Manual PDF Analysis" → it hides the database filters (college, stream, year etc.) and shows the 3 PDF upload slots
+If they select anything else (Topics, Summary, Mock Test) → it shows the database filters and hides the PDF upload slots
+{% endcomment %}
+{% endblock %}
 {% endblock %}

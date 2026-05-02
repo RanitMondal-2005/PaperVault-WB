@@ -46,9 +46,18 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold small text-muted text-uppercase">Stream</label>
-                            {{ form.stream }}
+                            <select name="stream" id="uploadStreamSelect" class="form-select shadow-none border-primary-subtle">
+                                <option value="">--- Select Stream ---</option>
+                                {% for stream in form.stream.field.queryset %}
+                                    <option value="{{ stream.id }}"
+                                        data-college="{{ stream.college_id }}"
+                                        {% if form.stream.value == stream.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ stream.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4" id="uploadSemesterField">
                             <label class="form-label fw-bold small text-muted text-uppercase">Semester</label>
                             {{ form.semester }}
                         </div>

@@ -4,103 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% comment %} Connecting Bootstrap Using CDN {% endcomment %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- CSS Link -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.2">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.3">
     <link rel="icon" href="data:,">
-    <title>PaperVault WB</title>
+    <title>PaperVault WB — Academic Repository</title>
 </head>
 <body class="d-flex flex-column min-vh-100">
-    {% comment %} Header {% endcomment %}
+
+    <!-- ── NAVBAR ── -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm py-3">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center fw-bold fs-5" href="{% url 'dashboard' %}">
-                <i class="bi bi-bank2 me-2 text-primary"></i>
+
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-5 gap-2" href="{% url 'dashboard' %}">
+                <div class="d-flex align-items-center justify-content-center rounded-2"
+                    style="width:32px;height:32px;background:rgba(37,99,235,0.15);">
+                    <i class="bi bi-bank2 text-primary"></i>
+                </div>
                 <span>PaperVault<span class="text-primary">WB</span></span>
             </a>
 
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <button class="navbar-toggler border-0 shadow-none" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav me-auto ms-lg-5">
+                <!-- Nav Links -->
+                <ul class="navbar-nav me-auto ms-lg-5 gap-1">
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'dashboard' %}"><i class="bi bi-house-door me-1"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3" href="{% url 'papers' %}">Archives</a>
-                    </li>
-                    <!-- New AI Analyzer Button -->
-                    <li class="nav-item">
-                        <a class="nav-link px-3 fw-bold text-info" href="{% url 'ai_analyzer' %}">
-                            <i class="bi bi-stars me-1"></i> AI Analyzer
+                        <a class="nav-link px-3 rounded-2" href="{% url 'dashboard' %}">
+                            <i class="bi bi-house-door me-1"></i>Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'materials' %}">
+                        <a class="nav-link px-3 rounded-2" href="{% url 'papers' %}">
+                            <i class="bi bi-archive me-1"></i>Archives
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-2" href="{% url 'materials' %}">
                             <i class="bi bi-journal-text me-1"></i>Materials
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 rounded-2 fw-bold" href="{% url 'ai_analyzer' %}"
+                            style="color: #67e8f9 !important;">
+                            <i class="bi bi-stars me-1"></i>AI Analyzer
                         </a>
                     </li>
                 </ul>
 
+                <!-- Right side -->
                 <div class="d-flex align-items-center gap-3">
                     {% if user.is_authenticated %}
+                        <!-- Verified badge -->
+                        {% if user.profile.is_verified %}
+                            <span class="badge rounded-pill px-3 py-2 d-none d-lg-inline-flex align-items-center gap-1"
+                                style="background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid rgba(34,197,94,0.2);">
+                                <i class="bi bi-patch-check-fill"></i> Verified
+                            </span>
+                        {% endif %}
+
                         <div class="dropdown">
-                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle fs-5 me-2"></i>
-                                <span class="small fw-medium">{{ user.username }}</span>
+                            <button class="btn btn-link text-white text-decoration-none dropdown-toggle p-0 d-flex align-items-center gap-2"
+                                type="button" data-bs-toggle="dropdown">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle"
+                                    style="width:34px;height:34px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                                <span class="small fw-medium d-none d-lg-inline">{{ user.username }}</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                <li><a class="dropdown-item py-2" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a href="{% url 'password_change' %}" class="dropdown-item text-danger">
-                                    <i class="bi bi-key-fill me-2"></i>Change Password
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-3" style="min-width:200px;">
+                                <li class="px-3 py-2 border-bottom">
+                                    <div class="small fw-bold text-dark">{{ user.username }}</div>
+                                    <div class="small text-muted">{{ user.profile.role|title }}</div>
+                                </li>
                                 <li>
-                                    <form action="{% url 'logout' %}" method="post" class="px-3 py-1">
+                                    <a class="dropdown-item py-2 rounded-2 mx-1" href="{% url 'dashboard' %}">
+                                        <i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2 rounded-2 mx-1" href="{% url 'password_change' %}">
+                                        <i class="bi bi-key-fill me-2 text-warning"></i>Change Password
+                                    </a>
+                                </li>
+                                <li class="border-top mt-1 pt-1">
+                                    <form action="{% url 'logout' %}" method="post" class="px-2 py-1">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-sm w-100 mt-1">Logout</button>
+                                        <button type="submit" class="btn btn-danger btn-sm w-100 rounded-2">
+                                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                                        </button>
                                     </form>
                                 </li>
                             </ul>
                         </div>
                     {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">Sign In</a>
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm fw-bold">
+                            Sign In
+                        </a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
+    <!-- ── MESSAGES ── -->
+    <div class="container mt-3">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center gap-2">
                         {% if message.tags == 'success' %}
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                        {% elif message.tags == 'error' %}
-                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% elif message.tags == 'danger' %}
+                            <i class="bi bi-exclamation-triangle-fill text-danger"></i>
                         {% else %}
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <i class="bi bi-info-circle-fill text-warning"></i>
                         {% endif %}
                         <div>{{ message }}</div>
                     </div>
-                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert"></button>
                 </div>
             {% endfor %}
         {% endif %}
     </div>
 
+    <!-- ── MAIN CONTENT ── -->
     <main class="flex-grow-1">
         {% block content %}{% endblock %}
     </main>
 
-    {% comment %} Footer  {% endcomment %}
+    <!-- ── BACK TO TOP ── -->
     <div class="container-fluid bg-sky-light border-top mt-5 py-3">
         <div class="container text-center">
             <a href="#" class="back-to-top-link text-decoration-none small fw-bold">
@@ -109,73 +146,136 @@
         </div>
     </div>
 
+    <!-- ── FOOTER ── -->
     <footer class="pt-5 pb-4">
         <div class="container">
             <div class="row g-4">
+
+                <!-- Brand col -->
                 <div class="col-lg-5 col-md-6">
-                    <h5 class="text-white fw-bold mb-3 small">PaperVault WB</h5>
-                    <p class="small text-white-50 lh-lg" style="max-width: 350px;">
-                        The premier decentralized academic repository providing verified access to previous examination papers for West Bengal institutions. 
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div class="d-flex align-items-center justify-content-center rounded-2"
+                            style="width:32px;height:32px;background:rgba(37,99,235,0.2);">
+                            <i class="bi bi-bank2 text-primary"></i>
+                        </div>
+                        <span class="text-white fw-bold">PaperVault<span class="text-primary">WB</span></span>
+                    </div>
+                    <p class="small lh-lg mb-3" style="color:rgba(255,255,255,0.5); max-width:320px;">
+                        The premier decentralized academic repository providing verified access to previous examination papers for West Bengal institutions.
                     </p>
+                    <div class="d-flex gap-2">
+                        <span class="badge px-3 py-2 rounded-pill"
+                            style="background:rgba(37,99,235,0.15);color:rgba(255,255,255,0.6);border:1px solid rgba(37,99,235,0.2);font-size:0.7rem;">
+                            <i class="bi bi-shield-check me-1"></i>Verified Papers Only
+                        </span>
+                        <span class="badge px-3 py-2 rounded-pill"
+                            style="background:rgba(34,197,94,0.1);color:rgba(255,255,255,0.6);border:1px solid rgba(34,197,94,0.15);font-size:0.7rem;">
+                            <i class="bi bi-unlock me-1"></i>Free Access
+                        </span>
+                    </div>
                 </div>
+
+                <!-- Resources col -->
                 <div class="col-lg-3 col-md-6 ms-auto">
-                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">Resources</h6>
+                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing:1.5px;">
+                        Resources
+                    </h6>
                     <ul class="list-unstyled small">
-                        
-                        <li class="mb-2"><a href="{% url 'dashboard' %}" class="text-white-50 text-decoration-none hover-white transition">Home</a></li>             
-                        <li class="mb-2"><a href="{% url 'ai_analyzer' %}" class="text-white-50 text-decoration-none hover-white transition">AI Analyzer</a></li>
-                        <li class="mb-2"><a href="{% url 'papers' %}" class="text-white-50 text-decoration-none hover-white transition">Search Archive</a></li>
-                        <li class="mb-2"><a href="{% url 'materials' %}" class="text-white-50 text-decoration-none hover-white transition">Study Materials</a></li>
-                        <li class="mb-2"><a href="{% url 'about' %}" class="text-white-50 text-decoration-none hover-white transition">About Us</a></li>
-                        <li class="mb-2"><a href="{% url 'contact_us' %}" class="text-white-50 text-decoration-none hover-white transition">Contact Us</a></li>
+                        <li class="mb-2">
+                            <a href="{% url 'dashboard' %}" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <i class="bi bi-house-door text-primary"></i>Home
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'papers' %}" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <i class="bi bi-archive text-primary"></i>Question Papers
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'materials' %}" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <i class="bi bi-journal-text text-primary"></i>Study Materials
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'ai_analyzer' %}" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <i class="bi bi-stars text-primary"></i>AI Analyzer
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'about' %}" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <i class="bi bi-info-circle text-primary"></i>About Us
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="{% url 'contact_us' %}" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <i class="bi bi-envelope text-primary"></i>Contact Us
+                            </a>
+                        </li>
                     </ul>
                 </div>
-                {% comment %} Implementing Contact US {% endcomment %}
+
+                <!-- Support col -->
                 <div class="col-lg-3 col-md-6">
-                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing: 1px;">
-                        <a href="{% url 'contact_us' %}" class="text-white text-decoration-none hover-white">Support</a>
+                    <h6 class="text-white fw-bold mb-3 small text-uppercase" style="letter-spacing:1.5px;">
+                        Support
                     </h6>
-                    <ul class="list-unstyled small text-white-50">
-                        <!-- Email Link -->
-                        <li class="mb-2">
-                            {% comment %} "mailto:" <- This the thing that is acting as real Email link  {% endcomment %}
-                            <a href="mailto:help@papervault.wb" class="text-white-50 text-decoration-none hover-white transition">
-                                <i class="bi bi-envelope-at me-2 text-primary"></i> help@papervault.wb
+                    <ul class="list-unstyled small">
+                        <li class="mb-3">
+                            <a href="mailto:help@papervault.wb" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <div class="d-flex align-items-center justify-content-center rounded-2 flex-shrink-0"
+                                    style="width:28px;height:28px;background:rgba(37,99,235,0.15);">
+                                    <i class="bi bi-envelope-at text-primary" style="font-size:0.75rem;"></i>
+                                </div>
+                                help@papervault.wb
                             </a>
                         </li>
-                        <!-- Phone Link -->
-                        <li class="mb-2">
-                            {% comment %} "tel:" <- This is the thing that is acting as real Call {% endcomment %}
-                            <a href="tel:+91335425678" class="text-white-50 text-decoration-none hover-white transition">
-                                <i class="bi bi-phone me-2 text-primary"></i> +91 335-4256-78
+                        <li class="mb-3">
+                            <a href="tel:+91335425678" class="text-decoration-none d-flex align-items-center gap-2"
+                                style="color:rgba(255,255,255,0.5);">
+                                <div class="d-flex align-items-center justify-content-center rounded-2 flex-shrink-0"
+                                    style="width:28px;height:28px;background:rgba(37,99,235,0.15);">
+                                    <i class="bi bi-phone text-primary" style="font-size:0.75rem;"></i>
+                                </div>
+                                +91 335-4256-78
                             </a>
                         </li>
-                        <!-- Location -->
-                        <li class="mb-2">
-                            <span class="d-flex align-items-start">
-                                <i class="bi bi-geo-alt me-2 text-primary"></i> 
-                                <span>West Bengal, India</span>
-                            </span>
+                        <li>
+                            <div class="d-flex align-items-center gap-2" style="color:rgba(255,255,255,0.5);">
+                                <div class="d-flex align-items-center justify-content-center rounded-2 flex-shrink-0"
+                                    style="width:28px;height:28px;background:rgba(37,99,235,0.15);">
+                                    <i class="bi bi-geo-alt text-primary" style="font-size:0.75rem;"></i>
+                                </div>
+                                West Bengal, India
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
-            
+
             <hr class="mt-4 mb-4 border-secondary opacity-25">
-            
+
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                <p class="small text-white-50 mb-0">&copy; 2026 PaperVault WB. Built for academic excellence.</p>
-                <div class="d-flex gap-3">
-                    <span class="badge bg-secondary bg-opacity-10 text-white-50 fw-normal border border-secondary border-opacity-25 px-3 py-2">
-                        <i class="bi bi-shield-lock me-1"></i> Verified Faculty Portal
+                <p class="small mb-0" style="color:rgba(255,255,255,0.35);">
+                    &copy; 2026 PaperVault WB — Built for academic excellence in West Bengal.
+                </p>
+                <div class="d-flex gap-2 align-items-center">
+                    <span class="badge px-3 py-2"
+                        style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.08);font-size:0.7rem;">
+                        <i class="bi bi-shield-lock me-1"></i>Verified Faculty Portal
                     </span>
                 </div>
             </div>
         </div>
     </footer>
-    {% comment %} Connecting Bootstrap Using CDN {% endcomment %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Link JS -->
     {% block scripts %}
         <script src="{% static 'js/script.js' %}"></script>
     {% endblock %}

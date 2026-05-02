@@ -1,10 +1,37 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-
-    <!-- Filter Card -->
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">
+                <i class="bi bi-journal-richtext text-success me-2"></i>Study Materials
+            </h4>
+            <p class="text-muted small mb-0">Notes, assignments, lab manuals and placement resources from WB faculty.</p>
+        </div>
+        {% if user.is_authenticated and user.profile.role == 'FACULTY' and user.profile.is_verified %}
+        <a href="{% url 'upload_material' %}" class="btn btn-success rounded-pill px-4">
+            <i class="bi bi-journal-plus me-2"></i>Upload Material
+        </a>
+        {% endif %}
+    </div>
+    <!-- Materials Filter Logic -->
     <div class="card shadow-sm border-0 mb-4 p-3 animate-fadeIn">
         <form method="GET" action="{% url 'materials' %}" class="row g-3 align-items-end">
+
+            <!-- Type -->
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-muted text-uppercase">Type</label>
+                <select name="material_type" class="form-select shadow-none border-primary-subtle" id="matTypeSelect">
+                    <option value="">All Types</option>
+                    <option value="NOTES" {% if request.GET.material_type == 'NOTES' %}selected{% endif %}>Notes</option>
+                    <option value="ASSIGNMENT" {% if request.GET.material_type == 'ASSIGNMENT' %}selected{% endif %}>Assignment</option>
+                    <option value="LAB_MANUAL" {% if request.GET.material_type == 'LAB_MANUAL' %}selected{% endif %}>Lab Manual</option>
+                    <option value="PLACEMENT" {% if request.GET.material_type == 'PLACEMENT' %}selected{% endif %}>Placement Notes</option>
+                </select>
+            </div>
+
+            <!-- Institution — always visible -->
             <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted text-uppercase">Institution</label>
                 <select name="college" class="form-select shadow-none border-primary-subtle" id="matCollegeSelect">
@@ -14,7 +41,9 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-3">
+
+            <!-- Stream — hidden for placement -->
+            <div class="col-md-2" id="streamField">
                 <label class="form-label fw-bold small text-muted text-uppercase">Stream</label>
                 <select name="stream" class="form-select shadow-none border-primary-subtle" id="matStreamSelect">
                     <option value="">All Streams</option>
@@ -27,7 +56,9 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-2">
+
+            <!-- Semester — hidden for placement -->
+            <div class="col-md-2" id="semesterField">
                 <label class="form-label fw-bold small text-muted text-uppercase">Semester</label>
                 <select name="semester" class="form-select shadow-none border-primary-subtle">
                     <option value="">All Sems</option>
@@ -36,19 +67,23 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-2">
-                <label class="form-label fw-bold small text-muted text-uppercase">Type</label>
-                <select name="material_type" class="form-select shadow-none border-primary-subtle">
-                    <option value="">All Types</option>
-                    <option value="NOTES" {% if request.GET.material_type == 'NOTES' %}selected{% endif %}>Notes</option>
-                    <option value="ASSIGNMENT" {% if request.GET.material_type == 'ASSIGNMENT' %}selected{% endif %}>Assignment</option>
-                    <option value="PLACEMENT" {% if request.GET.material_type == 'PLACEMENT' %}selected{% endif %}>Placement Notes</option>
+
+            <!-- Subject — shown only for placement -->
+            <div class="col-md-2 d-none" id="subjectField">
+                <label class="form-label fw-bold small text-muted text-uppercase">Subject</label>
+                <select name="placement_subject" class="form-select shadow-none border-primary-subtle" id="placementSubjectSelect">
+                    <option value="">All Subjects</option>
+                    {% if request.GET.placement_subject %}
+                        <option value="{{ request.GET.placement_subject }}" selected>{{ request.GET.placement_subject }}</option>
+                    {% endif %}
                 </select>
             </div>
+
+            <!-- Filter Button -->
             <div class="col-md-2">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary w-100 fw-bold">
-                        <i class="bi bi-filter-circle me-1"></i>Filter
+                        <i class="bi bi-filter-circle"> Filter</i>
                     </button>
                     <a href="{% url 'materials' %}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-clockwise"></i>
@@ -58,7 +93,7 @@
         </form>
     </div>
 
-    <!-- Materials Table -->
+    <!-- Materials Table ( Filter Results ) -->
     <div class="table-responsive bg-white p-3 shadow-sm rounded border">
         <table class="table table-hover align-middle">
             <thead class="table-dark">
@@ -83,6 +118,8 @@
                             <span class="badge bg-success-subtle text-success border-0 px-2">Notes</span>
                         {% elif mat.material_type == 'ASSIGNMENT' %}
                             <span class="badge bg-warning-subtle text-warning border-0 px-2">Assignment</span>
+                        {% elif mat.material_type == 'LAB_MANUAL' %}
+                            <span class="badge bg-info-subtle text-info border-0 px-2">Lab Manual</span>
                         {% else %}
                             <span class="badge bg-primary-subtle text-primary border-0 px-2">Placement</span>
                         {% endif %}
@@ -131,10 +168,10 @@
             <ul class="pagination justify-content-center">
                 {% if materials.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">&laquo; First</a>
+                        <a class="page-link" href="?page=1&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}&placement_subject={{ request.GET.placement_subject }}">&laquo; First</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ materials.previous_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">Previous</a>
+                        <a class="page-link" href="?page={{ materials.previous_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}&placement_subject={{ request.GET.placement_subject }}">Previous</a>
                     </li>
                 {% endif %}
                 <li class="page-item active">
@@ -142,10 +179,10 @@
                 </li>
                 {% if materials.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ materials.next_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">Next</a>
+                        <a class="page-link" href="?page={{ materials.next_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}&placement_subject={{ request.GET.placement_subject }}">Next</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ materials.paginator.num_pages }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}">Last &raquo;</a>
+                        <a class="page-link" href="?page={{ materials.paginator.num_pages }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&semester={{ request.GET.semester }}&material_type={{ request.GET.material_type }}&placement_subject={{ request.GET.placement_subject }}">Last &raquo;</a>
                     </li>
                 {% endif %}
             </ul>
