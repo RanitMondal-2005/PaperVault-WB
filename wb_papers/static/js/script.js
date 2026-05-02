@@ -1,6 +1,8 @@
-// This JS is only doing one thing — fetching the paper count for the stats bar number ( eg : the "50+" counter on the dashboard).
+// -----------------------------
+// PAPERVAULT WB — MAIN JS SCRIPT
+// -----------------------------
 
-// ── STATS COUNTER ANIMATION ──
+// ── STATS COUNTER ANIMATION (Dashboard) ──
 function animateCount(el, target, duration) {
     let start = 0;
     const step = Math.ceil(target / (duration / 30));
@@ -10,8 +12,7 @@ function animateCount(el, target, duration) {
         el.textContent = start + '+';
     }, 30);
 }
-// ----------------------------------------------------------------------------------
-// Fetch paper count and animate the stat on dashboard
+
 const statEl = document.getElementById('stat-papers');
 if (statEl) {
     fetch("/search/")
@@ -27,107 +28,164 @@ if (statEl) {
         .catch(() => { statEl.textContent = '50+'; });
 }
 
-// ── STREAM FILTER BY COLLEGE ──
-const collegeSelect = document.getElementById('collegeSelect');
-const streamSelect = document.getElementById('streamSelect');
-
-function filterStreams() {
-    if (!collegeSelect || !streamSelect) return;
-    const selectedCollege = collegeSelect.value;
-    const options = streamSelect.querySelectorAll('option');
-
-    options.forEach(opt => {
-        if (!opt.value) return; // keep "Select Stream" option
-        if (!selectedCollege || opt.dataset.college === selectedCollege) {
-            opt.style.display = '';
-        } else {
-            opt.style.display = 'none';
-        }
-    });
-
-    // Reset stream if current selection doesn't match college
-    const selected = streamSelect.querySelector('option:checked');
-    if (selected && selected.dataset.college && selected.dataset.college !== selectedCollege) {
-        streamSelect.value = '';
-    }
-}
-
-if (collegeSelect) {
-    collegeSelect.addEventListener('change', filterStreams);
-    filterStreams(); // run on page load to respect pre-selected filters
-}
-
-// ── STREAM FILTER FOR AI LAB (matches by name, not ID) ──
+// ── SHOW MORE COLLEGES (Dashboard) ──
 document.addEventListener('DOMContentLoaded', function() {
-    const aiCollegeSelect = document.querySelector('#dbSection #collegeSelect');
-    const aiStreamSelect = document.querySelector('#dbSection #streamSelect');
-
-    if (aiCollegeSelect && aiStreamSelect) {
-        function filterAiStreams() {
-            const selected = aiCollegeSelect.value;
-            aiStreamSelect.querySelectorAll('option').forEach(opt => {
-                if (!opt.value || opt.value === 'All') return;
-                if (!selected || selected === 'All' || opt.dataset.college === selected) {
-                    opt.style.display = '';
-                } else {
-                    opt.style.display = 'none';
-                }
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', function() {
+            document.querySelectorAll('.college-card-wrapper').forEach(card => {
+                card.style.display = '';
             });
-            aiStreamSelect.value = 'All';
-        }
-        aiCollegeSelect.addEventListener('change', filterAiStreams);
-        filterAiStreams();
-    }
-});
-
-// ── SHOW MORE COLLEGES ON DASHBOARD ──
-const showMoreBtn = document.getElementById('showMoreBtn');
-if (showMoreBtn) {
-    showMoreBtn.addEventListener('click', function() {
-        document.querySelectorAll('.college-card-wrapper').forEach(card => {
-            card.style.display = '';
+            this.style.display = 'none';
         });
-        this.style.display = 'none';
-    });
-}
-
-// ── STREAM FILTER FOR MATERIALS PAGE ──
-document.addEventListener('DOMContentLoaded', function() {
-    const matCollegeSelect = document.getElementById('matCollegeSelect');
-    const matStreamSelect = document.getElementById('matStreamSelect');
-
-    if (matCollegeSelect && matStreamSelect) {
-        function filterMatStreams() {
-            const selected = matCollegeSelect.value;
-            matStreamSelect.querySelectorAll('option').forEach(opt => {
-                if (!opt.value) return;
-                if (!selected || opt.dataset.college === selected) {
-                    opt.style.display = '';
-                } else {
-                    opt.style.display = 'none';
-                }
-            });
-            matStreamSelect.value = '';
-        }
-        matCollegeSelect.addEventListener('change', filterMatStreams);
-        filterMatStreams();
     }
 });
 
-// ── UPLOAD MATERIAL: Hide college/stream/semester for Placement type ──
-document.addEventListener('DOMContentLoaded', function() {
-    const materialTypeSelect = document.getElementById('materialTypeSelect');
-    const collegeStreamSection = document.getElementById('collegeStreamSection');
+// ── REUSABLE STREAM FILTER FUNCTION ──
+// Works for any college+stream select pair using data-college attributes
+function applyStreamFilter(collegeEl, streamEl, resetOnChange) {
+    if (!collegeEl || !streamEl) return;
 
-    if (materialTypeSelect && collegeStreamSection) {
-        function toggleCollegeStream() {
-            if (materialTypeSelect.value === 'PLACEMENT') {
-                collegeStreamSection.style.display = 'none';
-            } else {
-                collegeStreamSection.style.display = '';
+    function doFilter(reset) {
+        const selected = collegeEl.value;
+        let hasVisible = false;
+
+        Array.from(streamEl.options).forEach(opt => {
+            if (!opt.value) return;
+            const belongs = !selected || opt.dataset.college === selected;
+            opt.style.display = belongs ? '' : 'none';
+            if (belongs) hasVisible = true;
+        });
+
+        // Lock stream dropdown if no college selected
+        streamEl.disabled = !selected;
+
+        if (reset) {
+            const current = streamEl.querySelector('option:checked');
+            if (current && current.dataset.college && current.dataset.college !== selected) {
+                streamEl.value = '';
             }
         }
-        materialTypeSelect.addEventListener('change', toggleCollegeStream);
-        toggleCollegeStream(); // run on load
     }
+
+    collegeEl.addEventListener('change', () => doFilter(true));
+    // Small delay ensures Django's pre-selected values are read correctly
+    setTimeout(() => doFilter(false), 50);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+// ── PAPERS SEARCH PAGE filter ──
+applyStreamFilter(
+    document.getElementById('collegeSelect'),
+    document.getElementById('streamSelect'),
+    true
+);
+
+// ── PAPERS UPLOAD PAGE filter ──
+applyStreamFilter(
+    document.getElementById('uploadCollegeSelect'),
+    document.getElementById('uploadStreamSelect'),
+    true
+);
+
+// ── MATERIALS SEARCH PAGE filter ──
+applyStreamFilter(
+    document.getElementById('matCollegeSelect'),
+    document.getElementById('matStreamSelect'),
+    true
+);
+
+// ── AI LAB filter ──
+const aiCollegeSelect = document.querySelector('#dbSection select[name="institution"]');
+const aiStreamSelect = document.querySelector('#dbSection select[name="stream"]');
+if (aiCollegeSelect && aiStreamSelect) {
+    function filterAiStreams() {
+        const selected = aiCollegeSelect.value;
+        Array.from(aiStreamSelect.options).forEach(opt => {
+            if (!opt.value || opt.value === 'All') return;
+            opt.style.display = (!selected || selected === 'All' || opt.dataset.college === selected) ? '' : 'none';
+        });
+        // Lock stream if no college selected
+        aiStreamSelect.disabled = (!selected || selected === 'All');
+        aiStreamSelect.value = 'All';
+    }
+    aiCollegeSelect.addEventListener('change', filterAiStreams);
+    // Run on page load
+    setTimeout(() => filterAiStreams(), 50);
+}
+
+// ── UPLOAD MATERIAL: Hide semester for Placement Notes ──
+const materialTypeSelect = document.getElementById('materialTypeSelect');
+const uploadSemesterField = document.getElementById('uploadSemesterField');
+if (materialTypeSelect && uploadSemesterField) {
+    function toggleSemester() {
+        uploadSemesterField.style.display = materialTypeSelect.value === 'PLACEMENT' ? 'none' : '';
+    }
+    materialTypeSelect.addEventListener('change', toggleSemester);
+    toggleSemester();
+}
+
+// ── MATERIALS PAGE: Toggle fields by type ──
+const matTypeSelect = document.getElementById('matTypeSelect');
+const streamField = document.getElementById('streamField');
+const semesterField = document.getElementById('semesterField');
+const subjectField = document.getElementById('subjectField');
+const placementSubjectSelect = document.getElementById('placementSubjectSelect');
+
+if (matTypeSelect) {
+    function toggleMaterialFields() {
+        const isPlacement = matTypeSelect.value === 'PLACEMENT';
+        if (streamField) streamField.classList.toggle('d-none', isPlacement);
+        if (semesterField) semesterField.classList.toggle('d-none', isPlacement);
+        if (subjectField) subjectField.classList.toggle('d-none', !isPlacement);
+        if (isPlacement && placementSubjectSelect && placementSubjectSelect.options.length <= 1) {
+            loadPlacementSubjects();
+        }
+    }
+
+    function loadPlacementSubjects() {
+        fetch('/materials/api/placement-subjects/')
+            .then(r => r.json())
+            .then(data => {
+                placementSubjectSelect.innerHTML = '<option value="">All Subjects</option>';
+                data.subjects.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    placementSubjectSelect.appendChild(opt);
+                });
+            })
+            .catch(() => {});
+    }
+
+    matTypeSelect.addEventListener('change', toggleMaterialFields);
+    toggleMaterialFields();
+}
+
+// ── AI LAB FORM: Continue to Analysis button ──
+const continueForm = document.querySelector('form[action*="ai-lab/select-subject"]');
+if (continueForm) {
+    continueForm.addEventListener('submit', function() {
+        const btn = document.getElementById('continueBtn');
+        if (btn) {
+            document.getElementById('continueBtnText')?.classList.add('d-none');
+            document.getElementById('continueBtnLoading')?.classList.remove('d-none');
+            btn.disabled = true;
+        }
+    });
+}
+
+// ── AI SELECT SUBJECT: Analyze Now button ──
+const analyzeForm = document.querySelector('form[action*="ai-lab/analyze"]');
+if (analyzeForm) {
+    analyzeForm.addEventListener('submit', function() {
+        const btn = document.getElementById('analyzeBtn');
+        if (btn) {
+            document.getElementById('btnText')?.classList.add('d-none');
+            document.getElementById('btnLoading')?.classList.remove('d-none');
+            btn.disabled = true;
+        }
+    });
+}
 });
