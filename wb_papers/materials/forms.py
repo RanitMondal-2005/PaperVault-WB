@@ -11,6 +11,7 @@ class MaterialUploadForm(forms.ModelForm):
         ('', '--- Select Type ---'),
         ('NOTES', 'Notes'),
         ('ASSIGNMENT', 'Assignment / Teacher Suggestion'),
+        ('LAB_MANUAL', 'Lab Manual'),
         ('PLACEMENT', 'Placement Notes'),
     ]
 
@@ -18,13 +19,19 @@ class MaterialUploadForm(forms.ModelForm):
 
     material_type = forms.ChoiceField(
         choices=MATERIAL_TYPE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle', 'id': 'materialTypeSelect'})
+        widget=forms.Select(attrs={
+            'class': 'form-select shadow-none border-primary-subtle',
+            'id': 'materialTypeSelect'
+        })
     )
 
     stream = forms.ModelChoiceField(
         queryset=Stream.objects.all(),
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle'}),
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'form-select shadow-none border-primary-subtle',
+            'id': 'uploadStreamSelect'
+        }),
         empty_label="--- Select Stream ---"
     )
 
@@ -42,24 +49,20 @@ class MaterialUploadForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['stream'].label_from_instance = lambda obj: f"{obj.name}"
-        self.fields['college'].required = False
+        self.fields['college'].required = True
+        self.fields['college'].widget.attrs.update({
+            'class': 'form-select shadow-none border-primary-subtle',
+            'id': 'uploadCollegeSelect'
+        })
 
     def clean(self):
         cleaned_data = super().clean()
-        material_type = cleaned_data.get('material_type')
         college = cleaned_data.get('college')
         stream = cleaned_data.get('stream')
-        semester = cleaned_data.get('semester')
-
-        # For non-placement types(like NOTES/ASSIGNMENT), college/stream/semester are required,
-        # But For Placement Notes ,they are Optional
-        if material_type != 'PLACEMENT':
-            if not college:
-                self.add_error('college', 'College is required for Notes and Assignments.')
-            if not stream:
-                self.add_error('stream', 'Stream is required for Notes and Assignments.')
-            if not semester:
-                self.add_error('semester', 'Semester is required for Notes and Assignments.')
+        if not college:
+            self.add_error('college', 'Please select a college.')
+        if not stream:
+            self.add_error('stream', 'Please select a stream.')
         return cleaned_data
 
     class Meta:
@@ -67,7 +70,6 @@ class MaterialUploadForm(forms.ModelForm):
         fields = ['title', 'material_type', 'college', 'stream', 'subject_name', 'semester', 'description', 'pdf_file']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Data Structures Notes Unit 1-3'}),
-            'college': forms.Select(attrs={'class': 'form-select shadow-none border-primary-subtle'}),
             'subject_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Data Structures & Algorithm'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Optional: briefly describe what this covers...'}),
         }
