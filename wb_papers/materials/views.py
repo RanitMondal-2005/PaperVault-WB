@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from .models import Material
 from .forms import MaterialUploadForm
 from colleges.models import College, Stream
-
+from django.http import JsonResponse
 
 def materials_list(request):
     materials = Material.objects.all().order_by('-uploaded_at')
@@ -15,14 +15,19 @@ def materials_list(request):
     sem = request.GET.get('semester')
     material_type = request.GET.get('material_type')
 
-    if college_id:
+    if college_id and college_id.strip():
         materials = materials.filter(college_id=college_id)
-    if stream_id:
+    if stream_id and stream_id.strip():
         materials = materials.filter(stream_id=stream_id)
-    if sem:
+    if sem and sem.strip():
         materials = materials.filter(semester=sem)
-    if material_type:
+    if material_type and material_type.strip():
         materials = materials.filter(material_type=material_type)
+
+    # Placement specific subject filter
+    placement_subject = request.GET.get('placement_subject', '').strip()
+    if placement_subject:
+        materials = materials.filter(subject_name=placement_subject)
 
     paginator = Paginator(materials, 10)
     page_number = request.GET.get('page')
@@ -103,3 +108,21 @@ def delete_material(request, pk):
         return redirect('materials')
 
     return render(request, 'delete_material.html', {'material': material})
+
+
+def get_placement_subjects(request):
+    """Returns distinct subjects that have PLACEMENT type materials"""
+    subjects = Material.objects.filter(
+        material_type='PLACEMENT'
+    ).values_list('subject_name', flat=True).distinct().order_by('subject_name')
+    return JsonResponse({'subjects': list(subjects)})
+
+
+def get_placement_colleges(request):
+    """Returns colleges that have PLACEMENT materials for a given subject"""
+    subject = request.GET.get('subject', '')
+    colleges = Material.objects.filter(
+        material_type='PLACEMENT',
+        subject_name=subject
+    ).values('college__id', 'college__name').distinct()
+    return JsonResponse({'colleges': list(colleges)})

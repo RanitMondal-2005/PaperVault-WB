@@ -57,8 +57,8 @@ def get_gemini_analysis(combined_text, task_type):
 
         'mock_test': (
             "STRICT INSTRUCTION: FORMAT AS A CLEAN LIST. NO INTRODUCTIONS. NO PARAGRAPHS.\n\n"
-            "Create 10 high-priority MCQs. Follow this exact template for every question and use double-spacing:\n\n"
-            "### 10 high-priority MCQs \n"
+            "Create 25 high-priority MCQs. Follow this exact template for every question and use double-spacing:\n\n"
+            "### 25 high-priority MCQs \n"
             "Q[Number]: [Question Text]\n\n"
             "A) [Option]\n"
             "B) [Option]\n"

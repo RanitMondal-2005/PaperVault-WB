@@ -16,17 +16,21 @@ def dashboard(request):
     colleges = College.objects.all()
     return render(request, 'dashboard.html', {'colleges': colleges})
 
+# Paper Search  Filter Logic
 def paper_search(request):
     papers = Paper.objects.all().order_by('-year')
     college_id = request.GET.get('college')
     stream_id = request.GET.get('stream')
     sem = request.GET.get('semester')
     year = request.GET.get('year')
+    exam_type = request.GET.get('exam_type')
 
     if college_id: papers = papers.filter(college_id=college_id)
     if stream_id: papers = papers.filter(stream_id=stream_id)
     if sem: papers = papers.filter(semester=sem)
     if year: papers = papers.filter(year=year)
+    
+    if exam_type: papers = papers.filter(exam_type=exam_type)
 
     # ---- Applying Paginator Logic -----
     paginator = Paginator(papers, 10) # 10 papers per page
@@ -163,7 +167,7 @@ def ai_select_subject(request):
     """ Intermediate step to find valid subjects based on filters """
     if request.method == 'POST':
         task = request.POST.get('task_type')
-        
+
         # If user chose manual PDF upload, skip straight to analysis
         if task == 'pdf_upload':
             return ai_analyze(request)
@@ -174,6 +178,7 @@ def ai_select_subject(request):
         sem = request.POST.get('semester')
         institution_name = request.POST.get('institution')
         stream_id = request.POST.get('stream')
+        exam_type = request.POST.get('exam_type')
 
         # Find all unique subjects that actually exist for these filters
         papers = Paper.objects.filter(year__range=(start, end), semester=sem)
@@ -181,12 +186,15 @@ def ai_select_subject(request):
             papers = papers.filter(college__name=institution_name)
         if stream_id != 'All':
             papers = papers.filter(stream_id=stream_id)
+        if exam_type and exam_type != 'All':
+            papers = papers.filter(exam_type=exam_type)
 
         # Using QuerySets in Django
         subjects = papers.values(
             'subject_name', 
             'subject_code', 
-            'year', 
+            'year',
+            'exam_type'
         ).distinct().order_by('-year')
 
         return render(request, 'ai_select_subject.html', {
@@ -204,11 +212,14 @@ def ai_analyze(request):
         # Logic for stored papers
         if task in ['topics', 'summary','mock_test']:
             subject_name = request.POST.get('selected_subject')
+            exam_type = request.POST.get('exam_type')
             papers = Paper.objects.filter(
                 subject_name=subject_name,
                 year__range=(request.POST.get('start_year'), request.POST.get('end_year')),
                 semester=request.POST.get('semester')
             )
+            if exam_type and exam_type != 'All':
+                papers = papers.filter(exam_type=exam_type)
             for paper in papers[:5]:
                 combined_text += extract_text_from_pdf(paper.pdf_file)
         
