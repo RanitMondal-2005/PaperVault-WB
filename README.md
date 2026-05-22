@@ -43,6 +43,8 @@ No login required for students. Faculty members can register, get verified, and 
 - 📎 PDF Analysis — upload any PDF and get instant AI analysis
 
 ---
+## Live URL 
+Visit: https://ranitmondal.pythonanywhere.com/
 
 ## 🛠️ Tech Stack
 
@@ -167,6 +169,9 @@ This project is licensed under the MIT License.
 - GitHub: [@Biswajitsamanta1109](https://github.com/Biswajitsamanta1109)
 
 > Built in collaboration as an academic project for West Bengal students.
+
+<hr>
+<strong> Do Check Our Site at : https://ranitmondal.pythonanywhere.com/ </strong>
 
 ---
 
