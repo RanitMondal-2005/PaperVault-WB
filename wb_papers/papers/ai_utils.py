@@ -1,17 +1,18 @@
 import openai 
 from django.conf import settings
-import PyPDF2
+import PyPDF2 # Library to extract text from PDF files
 
-def get_gemini_analysis(combined_text, task_type):
+def get_gemini_analysis(combined_text, task_type): # combined_text is the text extracted from the PDF and task_type is the type of analysis requested, both parameters coming from the user input via papers/views.py
     #  Validate key existence before doing anything else
-    api_key = getattr(settings, 'OPENROUTER_API_KEY', None)
-    # GUARD: Stop execution if there is no content/less content
+    api_key = getattr(settings, 'OPENROUTER_API_KEY', None) # Get API key from settings.py ; getattr()  safely retrieves the API key from settings, providing a default value of None if not found.
+    # Use of getattr() -> used to dynamically access model fields, settings, or properties using their string names
+    # GUARD: Stop execution if there is no content/less content to save API costs and prevent empty payloads
     if not combined_text or len(combined_text) < 30:
         return "Not enough data to analyze. Please upload valid PDF."
 
-    # Initialize the OpenRouter client
+    # Create a new instance of the OpenAI client redirected to point at OpenRouter's servers
     client = openai.OpenAI(
-        base_url="https://openrouter.ai/api/v1",
+        base_url="https://openrouter.ai/api/v1", # Base URL for the OpenRouter API
         api_key=api_key, # Key is  in settings.py and loaded from .env, so it won't be hardcoded here.
     )
     
@@ -71,31 +72,34 @@ def get_gemini_analysis(combined_text, task_type):
     }
 
     try:
-        # We use the Gemini Flash 2.0 model via OpenRouter's gateway
-        completion = client.chat.completions.create(
+        # We use the Free AI model via OpenRouter's gateway
+        completion = client.chat.completions.create( # send request to OpenRouter API through OpenAI client. This line Fires the request to the API, navigating: Connection -> Chat Dept -> Text Tool -> Execute
+            # this above line :navigates down the chain from the client connection, to the chat department, to the completions tool, and uses .create() to package and send our prompt payload over the network.
             model="google/gemini-2.0-flash-001",
             messages=[
-                {"role": "user", "content": f"{prompts.get(task_type, 'Analyze:')}\n\n{combined_text[:10000]}"}
+                {"role": "user", "content": f"{prompts.get(task_type, 'Analyze:')}\n\n{combined_text[:10000]}"} # # Combines the matching task prompt with the first 10,000 text characters of the PDF because AI can only process a limited amount of text at once.
             ],
         )
-        return completion.choices[0].message.content
-        
+        return completion.choices[0].message.content # Returns the AI's response content by accessing the first choice's message given by the AI. It basically extracts and pass the generated Markdown text response back to the calling view.
+
     except Exception as e:
         error_msg = str(e)
         # OpenRouter uses similar error codes, so this catch remains useful
-        if "429" in error_msg:   # if too many requests send
+        if "429" in error_msg:   # if too many requests send, so RATE LIMIT EXCEPTION handled cleanly.
             return "AI Rate Limit: The server is busy. Please wait 60 seconds."
         return f"AI Error: {error_msg}"
 
-def extract_text_from_pdf(pdf_file):
+def extract_text_from_pdf(pdf_file): # This pdf_file is the uploaded PDF file coming from the user via papers/views.py 
     """Kept identical so you don't need to change other files."""
-    text = ""
+    text = "" # Initialize text variable to store extracted content
     try:
-        reader = PyPDF2.PdfReader(pdf_file)
+        reader = PyPDF2.PdfReader(pdf_file) # Create a PDF reader object which will read the PDF file
+        # Then, Loop through pages, restricting processing exclusively to the first 8 pages
         for page in reader.pages[:8]:   # For now only read the first 8 pages of the pdf
-            content = page.extract_text()
-            if content:
-                text += content
+            content = page.extract_text() # Extract text from the page, .extract_text() is an inbuilt method provided by PyPDF2 that processes the page's content and returns it as a plain string and returns None for empty pages.
+            # this extracted text from a page is put to content variable; since we will read only the first 8 pages,so basic structure : read pg one by one and extract that page's content and store it.
+            if content: # If content is not None or empty
+                text += content # Append the extracted content to the text variable
     except Exception as e:
         print(f"Error reading PDF: {e}")
-    return text
+    return text # Return the final extracted text
