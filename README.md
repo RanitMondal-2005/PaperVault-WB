@@ -23,6 +23,12 @@ No login required for students. Faculty members can register, get verified, and 
 
 ---
 
+## 🌐 Live URL
+
+🔗 **[https://ranitmondal.pythonanywhere.com](https://ranitmondal.pythonanywhere.com)**
+
+---
+
 ## ✨ Features
 
 ### For Students
@@ -43,8 +49,6 @@ No login required for students. Faculty members can register, get verified, and 
 - 📎 PDF Analysis — upload any PDF and get instant AI analysis
 
 ---
-## Live URL 
-Visit: https://ranitmondal.pythonanywhere.com/
 
 ## 🛠️ Tech Stack
 
@@ -53,7 +57,7 @@ Visit: https://ranitmondal.pythonanywhere.com/
 | Backend | Django 6.0 (Python 3.14) |
 | Frontend | Bootstrap 5.3, Bootstrap Icons |
 | Database | SQLite (dev) / upgradeable to PostgreSQL |
-| AI Integration | OpenRouter API (Gemini 2.0 Flash) |
+| AI Integration | OpenRouter API (LLM — model configurable via ai_utils.py) |
 | PDF Processing | PyPDF2 |
 | Deployment | PythonAnywhere |
 
@@ -111,20 +115,24 @@ OPENROUTER_API_KEY=your-openrouter-api-key-here
 ---
 
 ## 📁 Project Structure
+## 📁 Project Structure
+
+```
 PaperVault-WB/
-├── wb_papers/          # Django project settings & URLs
-├── papers/             # Question papers app
-├── materials/          # Study materials app
-├── colleges/           # Colleges & streams app
-├── users/              # Authentication & profiles
-├── templates/          # HTML templates
-├── static/             # CSS, JS, images
-│   ├── css/style.css
-│   └── js/script.js
-├── media/              # Uploaded files (gitignored)
-│   └── college_logos/  # College logos (tracked)
-├── populate_db.py      # Database seeding script
-└── .env.example        # Environment variables template
+├── wb_papers/          
+├── papers/             
+├── materials/          
+├── colleges/           
+├── users/              
+├── templates/          
+├── static/             
+│   ├── css/
+│   └── js/
+├── media/              
+│   └── college_logos/  
+├── populate_db.py      
+└── .env.example        
+```
 
 ---
 
@@ -156,7 +164,7 @@ For code contributions:
 ## 📄 License
 
 This project is licensed under the MIT License.
-(" i.e, Anyone can use, copy, modify and distribute this code — for free — as long as they give credit to the original author/authors.")
+> *Anyone can use, copy, modify and distribute this code — for free — as long as they give credit to the original authors.*
 
 ---
 
@@ -170,12 +178,10 @@ This project is licensed under the MIT License.
 
 > Built in collaboration as an academic project for West Bengal students.
 
-<hr>
-<strong> Do Check Our Site at : https://ranitmondal.pythonanywhere.com/ </strong>
-
 ---
 
 <div align="center">
+  <p>🔗 <strong><a href="https://ranitmondal.pythonanywhere.com">Visit PaperVault WB</a></strong></p>
   <p>Built with ❤️ for West Bengal students</p>
   <p><strong>Free forever. Verified always.</strong></p>
 </div>
