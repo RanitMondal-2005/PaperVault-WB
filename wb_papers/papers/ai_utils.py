@@ -75,7 +75,7 @@ def get_gemini_analysis(combined_text, task_type): # combined_text is the text e
         # We use the Free AI model via OpenRouter's gateway
         completion = client.chat.completions.create( # send request to OpenRouter API through OpenAI client. This line Fires the request to the API, navigating: Connection -> Chat Dept -> Text Tool -> Execute
             # this above line :navigates down the chain from the client connection, to the chat department, to the completions tool, and uses .create() to package and send our prompt payload over the network.
-            model="meta-llama/llama-3.3-70b-instruct:free",
+            model="poolside/laguna-xs-2.1:free",
             messages=[
                 {"role": "user", "content": f"{prompts.get(task_type, 'Analyze:')}\n\n{combined_text[:10000]}"} # # Combines the matching task prompt with the first 10,000 text characters of the PDF because AI can only process a limited amount of text at once.
             ],
