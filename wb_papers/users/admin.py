@@ -3,10 +3,9 @@ from .models import Profile
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    # This lets you see at a glance who needs help
-    list_display = ['user', 'role', 'is_verified']
-    list_filter = ['role', 'is_verified']
-    
+    list_display = ['user', 'role', 'college', 'is_verified']
+    list_filter = ['role', 'is_verified', 'college']
+
     # Simple action to verify faculty in one click
     actions = ['verify_faculty']
 
