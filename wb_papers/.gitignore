@@ -13,7 +13,7 @@ __pycache__/
 *.pyo
 
 # Ignore all user media uploads
-media/
+**/media/
 
 # Mac OS
 .DS_Store
