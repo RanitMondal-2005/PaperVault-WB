@@ -12,9 +12,9 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Ignore media uploads
-media/papers/
-media/materials/
+# Ignore all user media uploads
+media/
+
 # Mac OS
 .DS_Store
 __MACOSX/
