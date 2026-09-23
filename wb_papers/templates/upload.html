@@ -11,22 +11,39 @@
                 </div>
 
                 <div class="card-body p-4 p-md-5">
+                    <!-- 1. Display Non-Field / General Errors (Generated via def clean(..)) -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4 shadow-sm">
+                            <ul class="mb-0 ps-3">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
+
                         <div class="row g-4">
                             <div class="col-md-12"><h6 class="text-primary fw-bold text-uppercase small">1. Institutional Details</h6></div>
-                            
+
                             <div class="col-md-12">
                                 <label class="form-label fw-bold small text-muted text-uppercase">Paper Title</label>
                                 {{ form.title }}
+                                {% if form.title.errors %} <!-- Field Specific errors generated via individual def clean_...() methods -->
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.title.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
                                 {{ form.college }}
+                                {% if form.college.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.college.errors.0 }}</div>
+                                {% endif %}
                             </div>
-                            {% comment %} Stream / Department We will render a custom select box for this field manually {% endcomment %}
+
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small text-muted text-uppercase">Stream / Department</label>
                                 <select name="stream" id="uploadStreamSelect" class="form-select shadow-none border-primary-subtle" required>
@@ -39,31 +56,54 @@
                                         </option>
                                     {% endfor %}
                                 </select>
+                                {% if form.stream.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.stream.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
                             <div class="col-md-12 mt-4"><h6 class="text-primary fw-bold text-uppercase small">2. Subject & Exam Info</h6></div>
-                            <div class="col-md-8">                                
+
+                            <div class="col-md-8">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Subject Name</label>
                                 {{ form.subject_name }}
+                                {% if form.subject_name.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.subject_name.errors.0 }}</div>
+                                {% endif %}
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Subject Code</label>
                                 {{ form.subject_code }}
+                                {% if form.subject_code.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.subject_code.errors.0 }}</div>
+                                {% endif %}
                             </div>
-                            
+
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Exam Type</label>
                                 {{ form.exam_type }}
+                                {% if form.exam_type.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.exam_type.errors.0 }}</div>
+                                {% endif %}
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Exam Year</label>
                                 {{ form.year }}
+                                {% if form.year.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.year.errors.0 }}</div>
+                                {% endif %}
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Semester</label>
                                 {{ form.semester }}
+                                {% if form.semester.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.semester.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
+                            <!-- PDF File Upload with specific validation Check -->
                             <div class="col-md-12 mt-4">
                                 <label class="form-label small fw-bold text-muted text-uppercase">Document Attachment</label>
                                 <div class="p-4 border border-dashed rounded-3 bg-light text-center">
@@ -72,6 +112,14 @@
                                         {{ form.pdf_file }}
                                     </div>
                                     <div class="mt-2 text-muted small">Only PDF files up to 5MB.</div>
+
+                                    {% if form.pdf_file.errors %}
+                                        <div class="text-danger small mt-2 fw-semibold">
+                                            {% for error in form.pdf_file.errors %}
+                                                <div><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -88,4 +136,3 @@
     </div>
 </div>
 {% endblock %}
-
