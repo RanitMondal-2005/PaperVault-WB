@@ -1,32 +1,5 @@
-// -----------------------------
-// PAPERVAULT WB — MAIN JS SCRIPT
-// -----------------------------
 
-// ── STATS COUNTER ANIMATION (Dashboard) ──
-function animateCount(el, target, duration) {
-    let start = 0;
-    const step = Math.ceil(target / (duration / 30));
-    const timer = setInterval(() => {
-        start += step;
-        if (start >= target) { start = target; clearInterval(timer); }
-        el.textContent = start + '+';
-    }, 30);
-}
-
-const statEl = document.getElementById('stat-papers');
-if (statEl) {
-    fetch("/search/")
-        .then(r => r.text())
-        .then(html => {
-            const match = html.match(/Page \d+ of (\d+)/);
-            if (match) {
-                animateCount(statEl, parseInt(match[1]) * 10, 1000);
-            } else {
-                statEl.textContent = '50+';
-            }
-        })
-        .catch(() => { statEl.textContent = '50+'; });
-}
+// -------------- Dash Board --------------------------
 
 // ── SHOW MORE COLLEGES (Dashboard) ──
 document.addEventListener('DOMContentLoaded', function() {
@@ -34,13 +7,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (showMoreBtn) {
         showMoreBtn.addEventListener('click', function() {
             document.querySelectorAll('.college-card-wrapper').forEach(card => {
-                card.style.display = '';
+                card.style.display = ''; // Clears the inline style="display: none" and restores their default CSS layout so they immediately appear.
             });
-            this.style.display = 'none';
+            this.style.display = 'none'; // Hides the "Show All Institutes" button itself
         });
     }
 });
 
+
+// ---------------- Filter Logic ----------------------------
 // ── REUSABLE STREAM FILTER FUNCTION ──
 // Works for any college+stream select pair using data-college attributes
 function applyStreamFilter(collegeEl, streamEl, resetOnChange) {
