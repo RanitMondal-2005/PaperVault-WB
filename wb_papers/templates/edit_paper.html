@@ -14,65 +14,118 @@
                 </div>
 
                 <div class="card-body p-4 p-md-5">
+                    <!-- Non-Field Validation Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger mb-4 shadow-sm">
+                            <ul class="mb-0 ps-3">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
+
                         <div class="row g-4">
+                            <!-- Paper Title -->
                             <div class="col-12">
-                                <label class="form-label small fw-bold text-muted">Paper Title</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Paper Title</label>
                                 {{ form.title }}
+                                {% if form.title.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.title.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
+                            <!-- Subject Name & Code -->
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">Subject Name</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Subject Name</label>
                                 {{ form.subject_name }}
+                                {% if form.subject_name.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.subject_name.errors.0 }}</div>
+                                {% endif %}
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">Subject Code</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Subject Code</label>
                                 {{ form.subject_code }}
+                                {% if form.subject_code.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.subject_code.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
+                            <!-- College & Stream via JS Filtering -->
                             <div class="col-md-6">
-                                <label>College</label>
-                                {{ form.college }} 
+                                <label class="form-label small fw-bold text-muted text-uppercase">College / University</label>
+                                {{ form.college }}
+                                {% if form.college.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.college.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Stream</label>
+                                <select name="stream" id="uploadStreamSelect" class="form-select shadow-none border-primary-subtle" required>
+                                    <option value="">--- Select Stream ---</option>
+                                    {% for s in form.stream.field.queryset %}
+                                        <option value="{{ s.id }}"
+                                            data-college="{{ s.college_id }}"
+                                            {% if form.stream.value == s.id or paper.stream_id == s.id %}selected{% endif %}>
+                                            {{ s.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                {% if form.stream.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.stream.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
+                            <!-- Exam Info -->
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold text-muted">Stream</label>
-                                {{ form.stream }}
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-bold text-muted">Exam Type</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Exam Type</label>
                                 {{ form.exam_type }}
+                                {% if form.exam_type.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.exam_type.errors.0 }}</div>
+                                {% endif %}
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold text-muted">Semester</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Semester</label>
                                 {{ form.semester }}
+                                {% if form.semester.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.semester.errors.0 }}</div>
+                                {% endif %}
                             </div>
-
                             <div class="col-md-4">
-                                <label class="form-label small fw-bold text-muted">Year</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Year</label>
                                 {{ form.year }}
+                                {% if form.year.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.year.errors.0 }}</div>
+                                {% endif %}
                             </div>
 
-
-                            <div class="col-md-8">
-                                <label class="form-label small fw-bold text-muted">Update PDF File (Leave blank to keep current)</label>
+                            <!-- File Replacement -->
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Update PDF File (Leave blank to keep current)</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-white"><i class="bi bi-file-earmark-pdf text-danger"></i></span>
                                     <input type="file" name="pdf_file" accept=".pdf" class="form-control">
                                 </div>
+                                {% if form.pdf_file.errors %}
+                                    <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ form.pdf_file.errors.0 }}</div>
+                                {% endif %}
                                 {% if paper.pdf_file %}
                                     <div class="mt-2 small text-muted">
-                                        Current: <a href="{{ paper.pdf_file.url }}" target="_blank" class="text-primary text-decoration-none">{{ paper.pdf_file.name }}</a>
+                                        Current: <a href="{{ paper.pdf_file.url }}" target="_blank" class="text-primary text-decoration-none fw-semibold">
+                                            <i class="bi bi-box-arrow-up-right me-1"></i>{{ paper.pdf_file.name }}
+                                        </a>
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
 
+                        <!-- Action Buttons -->
                         <div class="d-flex flex-column flex-md-row gap-3 mt-5 border-top pt-4">
                             <button type="submit" class="btn btn-primary px-5 py-3 fw-bold rounded-3 shadow-sm">
-                                <i class="bi bi-save2 me-2"></i> Update Database
+                                <i class="bi bi-save2 me-2"></i> Update Paper
                             </button>
                             <a href="{% url 'delete_paper' paper.pk %}" class="btn btn-outline-danger px-4 py-3 rounded-3">
                                 <i class="bi bi-trash3 me-2"></i> Delete Paper

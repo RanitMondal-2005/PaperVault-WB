@@ -11,14 +11,14 @@
                 <div class="card-body p-4 p-md-5">
                     <h4 class="fw-bold text-dark">Confirm Deletion</h4>
                     <p class="text-muted">Are you sure you want to delete <strong>"{{ paper.title }}"</strong>? This action cannot be undone.</p>
-                    
+
                     <form method="POST">
                         {% csrf_token %}
                         <div class="d-grid gap-2 mt-4">
                             <button type="submit" class="btn btn-danger py-3 fw-bold rounded-3 shadow-sm">
                                 <i class="bi bi-trash3 me-2"></i> Yes, Delete Permanently
                             </button>
-                            <a href="{% url 'edit_paper' paper.pk %}" class="btn btn-light py-2 text-secondary">
+                            <a href="{% url 'papers' %}" class="btn btn-light py-2 text-secondary">
                                 Cancel and Go Back
                             </a>
                         </div>

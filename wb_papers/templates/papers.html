@@ -2,22 +2,25 @@
 {% block content %}
 <div class="container mt-4">
     <!-- Page Header -->
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <div>
-                <h4 class="fw-bold mb-1">
-                    <i class="bi bi-file-earmark-text text-primary me-2"></i>Question Papers Archive
-                </h4>
-                <p class="text-muted small mb-0">Browse and download verified previous year papers from WB colleges.</p>
-            </div>
-            {% if user.is_authenticated and user.profile.role == 'FACULTY' and user.profile.is_verified %}
-            <a href="{% url 'upload' %}" class="btn btn-primary rounded-pill px-4">
-                <i class="bi bi-cloud-arrow-up me-2"></i>Upload Paper
-            </a>
-            {% endif %}
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">
+                <i class="bi bi-file-earmark-text text-primary me-2"></i>Question Papers Archive
+            </h4>
+            <p class="text-muted small mb-0">Browse and download verified previous year papers from WB colleges.</p>
         </div>
-    <div class="card shadow-sm border-0 mb-4 p-3 animate-fadeIn row">
-        {% comment %} Filter Form {% endcomment %}
-        <form method="GET" action="{% url 'papers' %}" class="row g-3 align-items-end">
+        <!-- Upload Paper Option (Only if FACULTY) -->
+        {% if user.is_authenticated and user.profile.role == 'FACULTY' and user.profile.is_verified %}
+        <a href="{% url 'upload' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-cloud-arrow-up me-2"></i>Upload Paper
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow-sm border-0 mb-4 p-3 animate-fadeIn">
+        <form method="GET" action="{% url 'papers' %}" class="row g-3 align-items-start">
+            <!-- Type Field -->
             <div class="col-md-2">
                 <label class="form-label fw-bold small text-muted text-uppercase">Type</label>
                 <select name="exam_type" class="form-select shadow-none border-primary-subtle">
@@ -27,37 +30,47 @@
                     <option value="PRACTICAL" {% if request.GET.exam_type == 'PRACTICAL' %}selected{% endif %}>Practical</option>
                 </select>
             </div>
+            <!-- Institution/University Field -->
             <div class="col-md-4">
                 <label class="form-label fw-bold small text-muted text-uppercase">Institution / University</label>
                 <select name="college" class="form-select shadow-none border-primary-subtle" id="collegeSelect">
                     <option value="">All WB Colleges & Universities</option>
                     {% for c in colleges %}
                     <option value="{{c.id}}" {% if request.GET.college == c.id|stringformat:"s" %}selected{% endif %}>{{c.name}}</option>
+                    <!-- value="{{ c.id }}" sets the primary key that will be sent to the backend & used for filtering and 'selected' Preserves selected college after page reload
+                    |stringformat:"s" converts the integer `c.id` to a string; because from the GET URL we receive `request.GET.college` as a string (e.g., "2"), and in Python `"2" == 2` evaluates to False. Converting both to strings ensures `"2" == "2"` evaluates to True and keeps the option selected.
+                    -->
                     {% endfor %}
                 </select>
             </div>
+            <!-- Stream Field -->
             <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted text-uppercase">Branch / Stream</label>
                 <select name="stream" class="form-select shadow-none border-primary-subtle" id="streamSelect">
                     <option value="">Select Stream</option>
                     {% for s in streams %}
-                    <option value="{{s.id}}" 
-                        data-college="{{s.college_id}}"
-                        {% if request.GET.stream == s.id|stringformat:"s" %}selected{% endif %}>
+                    <option value="{{s.id}}" data-college="{{s.college_id}}" {% if request.GET.stream == s.id|stringformat:"s" %}selected{% endif %}>
                         {{s.name}}
+                        <!-- NOTE: data-college="{{s.college_id}}": stores the parent college ID so JavaScript can filter and show only the streams belonging to the selected college -->
                     </option>
                     {% endfor %}
                 </select>
+                <!-- Hint text : shown only when no college is chosen -->
+                <div id="streamHint" class="form-text text-muted small mt-1">
+                    <i class="bi bi-info-circle me-1"></i>Select a college first to choose a branch.
+                </div>
             </div>
+            <!-- Year Field -->
             <div class="col-md-2">
                 <label class="form-label fw-bold small text-muted text-uppercase">Year</label>
-                    <select name="year" class="form-select shadow-none border-primary-subtle">
-                        <option value="">All Years</option>
-                        {% for y in year_range %}
-                            <option value="{{ y }}" {% if request.GET.year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
-                        {% endfor %}
-                    </select>
+                <select name="year" class="form-select shadow-none border-primary-subtle">
+                    <option value="">All Years</option>
+                    {% for y in year_range %}
+                        <option value="{{ y }}" {% if request.GET.year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
             </div>
+            <!-- Semesters Field -->
             <div class="col-md-1">
                 <label class="form-label fw-bold small text-muted text-uppercase">Semester</label>
                 <select name="semester" class="form-select shadow-none border-primary-subtle">
@@ -67,116 +80,116 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-3">
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary w-100 shadow-sm fw-bold">
-                        <i class="bi bi-filter-circle me-2"></i>Apply Filters
-                    </button>
-                    <a href="{% url 'papers' %}" class="btn btn-outline-secondary shadow-sm">
-                        <i class="bi bi-arrow-clockwise"></i>
-                    </a>
-                </div>
+            <!-- Reset & Filter Search Buttons -->
+            <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                <a href="{% url 'papers' %}" class="btn btn-outline-secondary shadow-sm px-3" title="Clear Filters">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                </a>
+                <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold">
+                    <i class="bi bi-filter-circle me-1"></i>Apply Filters
+                </button>
             </div>
         </form>
     </div>
-    {% comment %} Filter Results {% endcomment %}
+
+    <!-- Filter Results -->
     <div class="table-responsive bg-white p-3 shadow-sm rounded border">
-        <table class="table table-hover align-middle custom-paper-table">
-    <thead class="table-dark">
-        <tr>
-            <th class="col-sub" style="width: 25%;">Subject & Code</th>
-            <th class="col-sem text-center" style="width: 8%;">Year</th>
-            <th class="col-year text-center" style="width: 10%;">Sem</th>
-            <th class="col-type text-center" style="width: 12%;">Type</th>
-            <th class="col-clg" style="width: 30%;">College / University</th>
-            <th class="col-clg" style="width: 30%;">Stream</th>
-            <th class="col-action text-end" style="width: 25%; padding-right: 20px;">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for paper in papers %}
-        <tr>
-            <td class="col-sub">
-                <div class="fw-bold text-dark">{{ paper.subject_name }}</div>
-                <span class="badge bg-light text-secondary border fw-normal" style="font-size: 0.7rem;">
-                    {{ paper.subject_code }}
-                </span>
-            </td>
+        <table class="table table-hover align-middle custom-paper-table mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 20%;">Subject & Code</th>
+                    <th class="text-center" style="width: 7%;">Year</th>
+                    <th class="text-center" style="width: 6%;">Sem</th>
+                    <th class="text-center" style="width: 10%;">Type</th>
+                    <th style="width: 19%;">College / University</th>
+                    <th style="width: 16%;">Stream</th>
+                    <th class="text-end" style="width: 22%; padding-right: 1.5rem;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paper in papers %}
+                <tr>
+                    <td>
+                        <div class="fw-bold text-dark">{{ paper.subject_name }}</div>
+                        <span class="badge bg-light text-secondary border fw-normal" style="font-size: 0.7rem;">
+                            {{ paper.subject_code }}
+                        </span>
+                    </td>
 
-            <td class="col-sem text-secondary">{{ paper.year }}</td>
+                    <td class="text-center text-secondary">{{ paper.year }}</td>
+                    <td class="text-center text-secondary">{{ paper.semester }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-info-subtle text-dark border-0 px-2" style="font-size: 0.7rem;">{{ paper.exam_type|title }}</span>
+                    </td>
 
-            <td class="col-year text-secondary">{{ paper.semester }}</td>
-            <td class="col-type">
-                <span class="badge bg-info-subtle text-dark border-0 px-2" style="font-size: 0.7rem;">{{ paper.exam_type|title }}</span>  
-            </td>
-
-            <td class="col-clg small text-muted">
-                <div class="text-truncate" style="max-width: 180px;" title="{{ paper.college.name }}">
-                    {{ paper.college.name }}
-                </div>
-            </td>
-
-            <td class="col-clg small text-muted">
-                <div class="text-truncate" style="max-width: 180px;" title="{{ paper.stream.name }}">
-                    {{ paper.stream.name }}
-                </div>
-            </td>
-
-            <td class="col-action text-end">
-                <div class="d-inline-flex gap-2">
-                    <a href="{{ paper.pdf_file.url }}" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm" target="_blank">
-                        <i class="bi bi-file-earmark-pdf me-1"></i>View
-                    </a>
-                {% comment %} Give Edit/Delete and View Option if User is Loggedin and those papers uplaoded by him {% endcomment %}
-                    {% if user.is_authenticated and paper.uploaded_by == user %}
-                        <div class="btn-group shadow-sm" role="group">
-                            <a href="{% url 'edit_paper' paper.pk %}" class="btn btn-sm btn-primary rounded-start-pill px-3" title="Edit Paper">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a href="{% url 'delete_paper' paper.pk %}" class="btn btn-sm btn-danger rounded-end-pill px-3" title="Delete Paper">
-                                <i class="bi bi-trash3"></i>
-                            </a>
+                    <td class="small text-muted">
+                        <div class="text-truncate" style="max-width: 180px;" title="{{ paper.college.name }}">
+                            {{ paper.college.name }}
                         </div>
-                    {% endif %}
-                    
-                </div>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="7" class="text-center py-5 text-muted bg-light bg-opacity-50">
-                <i class="bi bi-search d-block fs-1 mb-2 opacity-25"></i>
-                <p class="mb-0">No question papers found matching your criteria.</p>
-                <small>Try clearing your filters or selecting a different college.</small>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% comment %} Paginator Logic {% endcomment %}
-<nav aria-label="Page navigation" class="mt-4">
-    <ul class="pagination justify-content-center">
-        {% if papers.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page=1&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">&laquo; First</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ papers.previous_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Previous</a>
-            </li>
-        {% endif %}
+                    </td>
 
-        <li class="page-item active"><span class="page-link">Page {{ papers.number }} of {{ papers.paginator.num_pages }}</span></li>
+                    <td class="small text-muted">
+                        <div class="text-truncate" style="max-width: 150px;" title="{{ paper.stream.name }}">
+                            {{ paper.stream.name }}
+                        </div>
+                    </td>
 
-        {% if papers.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ papers.next_page_number }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Next</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ papers.paginator.num_pages }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Last &raquo;</a>
-            </li>
+                    <td class="text-end" style="padding-right: 20px;">
+                        <div class="d-inline-flex gap-2">
+                            <a href="{{ paper.pdf_file.url }}" class="btn btn-sm btn-outline-success rounded-pill px-3 shadow-sm" target="_blank">
+                                <i class="bi bi-file-earmark-pdf me-1"></i>View
+                            </a>
+                            {% if user.is_authenticated and paper.uploaded_by == user %}
+                                <div class="btn-group shadow-sm" role="group">
+                                    <a href="{% url 'edit_paper' paper.pk %}" class="btn btn-sm btn-primary rounded-start-pill px-3" title="Edit Paper">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="{% url 'delete_paper' paper.pk %}" class="btn btn-sm btn-danger rounded-end-pill px-3" title="Delete Paper">
+                                        <i class="bi bi-trash3"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted bg-light bg-opacity-50">
+                        <i class="bi bi-search d-block fs-1 mb-2 opacity-25"></i>
+                        <p class="mb-0">No question papers found matching your criteria.</p>
+                        <small>Try clearing your filters or selecting a different college.</small>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Paginator Logic -->
+        {% if papers.paginator.num_pages > 1 %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center mb-0">
+                {% if papers.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1&exam_type={{ request.GET.exam_type }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ papers.previous_page_number }}&exam_type={{ request.GET.exam_type }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Previous</a>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active"><span class="page-link">Page {{ papers.number }} of {{ papers.paginator.num_pages }}</span></li>
+
+                {% if papers.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ papers.next_page_number }}&exam_type={{ request.GET.exam_type }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ papers.paginator.num_pages }}&exam_type={{ request.GET.exam_type }}&college={{ request.GET.college }}&stream={{ request.GET.stream }}&year={{ request.GET.year }}&semester={{ request.GET.semester }}">Last &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
         {% endif %}
-    </ul>
-</nav>
-</div>
+    </div>
 </div>
 {% endblock %}
