@@ -4,13 +4,20 @@
     <div class="card shadow border-0 p-4 text-center">
         <h3 class="fw-bold">Select Subject</h3>
         <p class="text-muted">We found these subjects in our vault matching your filters.</p>
-        
+
         <form action="{% url 'ai_analyze' %}" method="POST">
             {% csrf_token %}
+            <!-- filters is a dictionary containing all users choice(input values) from previous Page -->
             {% for key, value in filters.items %}
+                <!--
+                    When Django renders the HTML, this loop generates hidden inputs invisible to the user.
+                    & When the user selects a subject and clicks "Analyze Now", all original constraints are submitted along with selected_subject,
+                    allowing ai_analyze to fetch the correct papers and give it to the AI.
+                -->
                 <input type="hidden" name="{{ key }}" value="{{ value }}">
             {% endfor %}
 
+            <!-- Showing all matched subjects found in the vault matching the user's filters  -->
             <div class="list-group my-4 text-start">
                 {% for sub in subjects %}
                 <label class="list-group-item d-flex gap-3 py-3">
@@ -29,14 +36,18 @@
                 {% endfor %}
             </div>
 
-            {% comment %} AI Analysis button {% endcomment %}
-            {% if subjects %} 
-            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5" id="analyzeBtn">
-                <span id="btnText">Analyze Now</span>
-                <span id="btnLoading" class="d-none">
+            <!-- AI Analysis button : Spinning Hanlded via JS -->
+            {% if subjects %}
+            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 js-loading-btn">
+                <!-- 1. The Normal Text -->
+                <span class="btn-text">Analyze Now</span>
+                <!-- 2. The Spinner & Loading Text (Hidden by default) -->
+                <span class="btn-loading d-none">
+                    <!-- We are using Bootstrap class that handles our spinning animation  which is unlocked when d-none is removed via js -->
                     <span class="spinner-border spinner-border-sm me-2"></span> Analyzing...
                 </span>
             </button>
+            <!-- Go Back -->
             <div class="mt-3">
                 <a href="{% url 'ai_lab' %}" class="text-muted small text-decoration-none">
                     <i class="bi bi-arrow-left me-1"></i> Cancel & Go Back
@@ -48,5 +59,4 @@
         </form>
     </div>
 </div>
-{% comment %} AI Analysis button script is handled in script.js, no need to include it here {% endcomment %}
 {% endblock %}
