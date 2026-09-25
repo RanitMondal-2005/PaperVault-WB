@@ -1,7 +1,6 @@
+// ---------- 1. DASHBOARD INTERACTIONS ---------------------------
 
-// -------------- Dash Board --------------------------
-
-// ── SHOW MORE COLLEGES (Dashboard) ──
+// ──------- SHOW MORE COLLEGES Button ──-------──-------
 document.addEventListener('DOMContentLoaded', function() {
     const showMoreBtn = document.getElementById('showMoreBtn');
     if (showMoreBtn) {
@@ -9,39 +8,30 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.college-card-wrapper').forEach(card => {
                 card.style.display = ''; // Clears the inline style="display: none" and restores their default CSS layout so they immediately appear.
             });
-            this.style.display = 'none'; // Hides the "Show All Institutes" button itself
+            this.style.display = 'none'; // Hides the "Show All Institutes" button itself after reveal
         });
     }
 });
 
 
-// ---------------- Filter Logic ----------------------------
+//----------- 2. JS STREAM FILTER (CORE)---------------------------
 
 
-// ------------- College & Stream : Choice Hint in Filter page  ------------------
-document.addEventListener('DOMContentLoaded', function () {
-    const clg = document.querySelector('#collegeSelect');
-    const strm = document.querySelector('#streamSelect');
-    const hint = document.querySelector('#streamHint');
+// ------------- Stream Choice Helper Text ------------------
+function setupStreamHint(collegeSelect, hintElement) {
+    if (!collegeSelect || !hintElement) return;
 
-    if (!clg || !strm) return;
-
-    function toggleStream() {
-        if (clg.value === "") {
-            strm.disabled = true;
-            if (hint) hint.style.display = 'block';
+    function toggleHint() {
+        if (collegeSelect.value === "") {
+            hintElement.style.display = 'block';
         } else {
-            strm.disabled = false;
-            if (hint) hint.style.display = 'none';
+            hintElement.style.display = 'none';
         }
     }
 
-    // Run on college change
-    clg.addEventListener('change', toggleStream);
-
-    // Run on page load
-    toggleStream();
-});
+    collegeSelect.addEventListener('change', toggleHint); // Check again whenever the college selection changes
+    toggleHint(); // Run on initial load
+}
 
 
 // ──--------------- JS STREAM FILTER ──---------------------
@@ -95,48 +85,55 @@ function applyStreamFilter(collegeSelect, streamSelect) {
     }, 50); // Small delay (50ms) ensures the DOM is fully ready before we read values
 }
 
+
+//--------------------------- 3. APPLICATION INITIALIZATION ---------------------------
+
 document.addEventListener('DOMContentLoaded', function() {
 
-    //------------- Call the Stream Filter Function for each page -------------
-
-    // ── 1. PAPERS SEARCH PAGE filter ──
+    // ── 1. Papers Search Page ──
     applyStreamFilter(
         document.getElementById('collegeSelect'),
-        document.getElementById('streamSelect'),
+        document.getElementById('streamSelect')
+    );
+    setupStreamHint(
+        document.getElementById('collegeSelect'),
+        document.getElementById('streamHint')
     );
 
-    // ── 2. PAPERS UPLOAD PAGE filter ──
+    // ── 2. Papers Upload Page ──
     applyStreamFilter(
         document.getElementById('uploadCollegeSelect'),
-        document.getElementById('uploadStreamSelect'),
+        document.getElementById('uploadStreamSelect')
+    );
+    setupStreamHint(
+        document.getElementById('uploadCollegeSelect'),
+        document.getElementById('uploadStreamHint')
     );
 
-    // ── 3. MATERIALS SEARCH PAGE filter ──
+    // ── 3. Materials Search Page ──
     applyStreamFilter(
         document.getElementById('matCollegeSelect'),
-        document.getElementById('matStreamSelect'),
+        document.getElementById('matStreamSelect')
+    );
+    setupStreamHint(
+        document.getElementById('matCollegeSelect'),
+        document.getElementById('matStreamHint')
     );
 
-    // ──--------------- AI LAB filter ──------------------------
-    const aiCollegeSelect = document.querySelector('#dbSection select[name="institution"]');
-    const aiStreamSelect = document.querySelector('#dbSection select[name="stream"]');
-    if (aiCollegeSelect && aiStreamSelect) {
-        function filterAiStreams() {
-            const selected = aiCollegeSelect.value;
-            Array.from(aiStreamSelect.options).forEach(opt => {
-                if (!opt.value || opt.value === 'All') return;
-                opt.style.display = (!selected || selected === 'All' || opt.dataset.college === selected) ? '' : 'none';
-            });
-            // Lock stream if no college selected
-            aiStreamSelect.disabled = (!selected || selected === 'All');
-            aiStreamSelect.value = 'All';
-        }
-        aiCollegeSelect.addEventListener('change', filterAiStreams);
-        // Run on page load
-        setTimeout(() => filterAiStreams(), 50);
-    }
+    // ── 4. AI Lab Form ──
+    applyStreamFilter(
+        document.getElementById('aiCollegeSelect'),
+        document.getElementById('aiStreamSelect')
+    );
+    setupStreamHint(
+        document.getElementById('aiCollegeSelect'),
+        document.getElementById('aiStreamHint')
+    );
 
-    // ── UPLOAD MATERIAL: Hide semester for Placement Notes ──
+
+    // ----------------------------------------------------------------
+
+    // ── Upload Material: Toggle Semester for Placement Notes ──
     const materialTypeSelect = document.getElementById('materialTypeSelect');
     const uploadSemesterField = document.getElementById('uploadSemesterField');
     if (materialTypeSelect && uploadSemesterField) {
@@ -147,7 +144,8 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleSemester();
     }
 
-    // ── MATERIALS PAGE: Toggle fields by type ──
+
+    // ── Materials Page: Dynamic Field Toggling ──
     const matTypeSelect = document.getElementById('matTypeSelect');
     const streamField = document.getElementById('streamField');
     const semesterField = document.getElementById('semesterField');
@@ -184,29 +182,26 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleMaterialFields();
     }
 
-    // ── AI LAB FORM: Continue to Analysis button ──
-    const continueForm = document.querySelector('form[action*="ai-lab/select-subject"]');
-    if (continueForm) {
-        continueForm.addEventListener('submit', function() {
-            const btn = document.getElementById('continueBtn');
-            if (btn) {
-                document.getElementById('continueBtnText')?.classList.add('d-none');
-                document.getElementById('continueBtnLoading')?.classList.remove('d-none');
-                btn.disabled = true;
-            }
-        });
-    }
 
-    // ── AI SELECT SUBJECT: Analyze Now button ──
-    const analyzeForm = document.querySelector('form[action*="ai-lab/analyze"]');
-    if (analyzeForm) {
-        analyzeForm.addEventListener('submit', function() {
-            const btn = document.getElementById('analyzeBtn');
-            if (btn) {
-                document.getElementById('btnText')?.classList.add('d-none');
-                document.getElementById('btnLoading')?.classList.remove('d-none');
-                btn.disabled = true;
+    // ── Submit Button Spinner (For ai_sleect_subject & ai_lab_form buttons)──
+    document.querySelectorAll('form').forEach(function(form) {
+
+        form.addEventListener('submit', function() {
+            const btn = form.querySelector('.js-loading-btn');
+            if (!btn) return;
+
+            const textSpan = btn.querySelector('.btn-text');
+            const loadingSpan = btn.querySelector('.btn-loading');
+
+            if (textSpan && loadingSpan) {
+                textSpan.classList.add('d-none');
+                loadingSpan.classList.remove('d-none');
             }
+
+            setTimeout(function() { // Disable the button itself to avoid mutiple submit clicks
+                btn.disabled = true;
+            }, 0);
         });
-    }
+    });
 });
+
