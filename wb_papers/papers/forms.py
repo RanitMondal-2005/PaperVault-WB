@@ -176,7 +176,7 @@ class PaperUploadForm(forms.ModelForm):
             }),
             'college': forms.Select(attrs={
                 'class': 'form-select shadow-none border-primary-subtle',
-                'id': 'uploadCollegeSelect'
+                'id': 'uploadCollegeSelect' # <--- Sets id="uploadCollegeSelect", needed for JS
             }),
             'subject_name': forms.TextInput(attrs={
                 'class': 'form-control shadow-none',
