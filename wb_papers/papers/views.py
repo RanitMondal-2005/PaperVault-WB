@@ -222,7 +222,7 @@ def ai_select_subject(request):
             messages.error(request, "Please select a semester.")
             return redirect('ai_lab')
 
-        # 4. Base Paper Query
+        # 4. Base Paper Query : it pulls all papers within that year range,but only if they also match that exact semester.
         papers = Paper.objects.filter(
             year__range=(start_year, end_year),
             semester=sem
@@ -238,13 +238,8 @@ def ai_select_subject(request):
         if exam_type and exam_type != 'All':
             papers = papers.filter(exam_type=exam_type)
 
-        # 6. Extract unique subject descriptors for the selection table
-        subjects = papers.values(
-            'subject_name',
-            'subject_code',
-            'year',
-            'exam_type'
-        ).distinct().order_by('-year')
+        # 6. Sorts matching papers from newest to oldest as full Paper objects so {{sub.id}} is accessible in the template.
+        subjects = papers.order_by('-year') # full Paper objects
 
         return render(request, 'ai_select_subject.html', {
             'subjects': subjects,
@@ -255,42 +250,39 @@ def ai_select_subject(request):
     return redirect('ai_lab')
 
 
-
 # ------------ Actual AI Analyser ------------
-def ai_analyze(request): # This function handles the analysis of selected papers that will be given to the AI for processing
-    if request.method == 'POST':
-        task = request.POST.get('task_type')
-        combined_text = "" # This is IMP as we will be concatenating the text extracted from multiple PDFs into this single variable to then send it as a single payload to the AI for analysis, instead of sending multiple separate API calls for each document which would be inefficient and costly.
+def ai_analyze(request):
+    if request.method != 'POST':
+        return redirect('ai_lab')
 
-        # Process text based on whether data lives inside historical(Already uploaded DB tables) tables or a direct file submission
-        if task in ['topics', 'summary','mock_test']:
-            subject_name = request.POST.get('selected_subject') # Get the selected subject name and exam type in next line
-            exam_type = request.POST.get('exam_type')
-            papers = Paper.objects.filter( # Filter papers based on selected subject, year range, and semester
-                subject_name=subject_name,
-                year__range=(request.POST.get('start_year'), request.POST.get('end_year')),
-                semester=request.POST.get('semester')
-            )
-            if exam_type and exam_type != 'All': # Check if a specific exam type is selected, if yes then filter by exam type also
-                papers = papers.filter(exam_type=exam_type)
+    # ---- When request == POST ------- :
+    task = request.POST.get('task_type')  # Read the user's chosen analysis type
+    combined_text = ""  # Accumulates extracted text from document(s) into a single prompt
 
-            # We will limit to 5 historical documents to optimize API constraints so that we don't exceed token limits.Only up to 5 papers will be processed.
-            for paper in papers[:5]: # FOR NOW, This Line will actually never be utilized as On the front end, user interactions are constrained i.e. manual uploads are limited to 3 slots by the UI layout, and typical database lookups narrow down to 1 or 2 papers based on targeted year filters.
-                combined_text += extract_text_from_pdf(paper.pdf_file)
+    # PATH A: Analyze the exact question paper chosen from the database
+    if task in ['topics', 'summary', 'mock_test']:
+        paper_id = request.POST.get('selected_paper_id') # brink the PK of the selected paper from ai_select_subject.html
+        if paper_id and paper_id.isdigit(): # isdigit() prevents invalid ID lookups
+            paper = Paper.objects.filter(id=paper_id).first()
+            if paper and paper.pdf_file:
+                combined_text = extract_text_from_pdf(paper.pdf_file)
 
-        elif task == 'pdf_upload':
-            # Iterate through separate multi-file input slots sequentially
-            for slot in ['pdf1', 'pdf2', 'pdf3']:
-                f = request.FILES.get(slot)
-                if f: # if file exists
-                    combined_text += extract_text_from_pdf(f) # combine extracted text from uploaded PDFs one after another
 
-        if not combined_text.strip(): # Check if no text was extracted
-            return render(request, 'ai_result.html', {'result': "Error: No text could be extracted. Please check your files or selection."})
+    # PATH B: Analyze user-uploaded PDF files directly from the browser
+    elif task == 'pdf_upload':
+        for slot in ['pdf1', 'pdf2', 'pdf3']:
+            uploaded_file = request.FILES.get(slot)
+            if uploaded_file:
+                combined_text += extract_text_from_pdf(uploaded_file) + "\n\n"
 
-        # The specific prompt for AI is controlled down inside 'ai_utils' based on 'task'; so get_gemini_analysis() is in ai_utils.py
-        result = get_gemini_analysis(combined_text, task) # Call the analysis function with the combined text and task type
 
-        return render(request, 'ai_result.html', {'result': result, 'task': task})
+    # Guard against unreadable/unscanned PDFs or empty text before calling the AI API
+    if not combined_text.strip():
+        return render(request, 'ai_result.html', {
+            'result': "Error: Could not extract any readable text from the selected papers. Ensure the files contain selectable digital text rather than raw scanned images.",
+            'task': task
+        })
 
-    return redirect('ai_lab')
+    # Call AI utility and send result to the template
+    result = get_gemini_analysis(combined_text, task)
+    return render(request, 'ai_result.html', {'result': result, 'task': task})

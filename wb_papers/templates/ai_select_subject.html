@@ -10,7 +10,7 @@
             <!-- filters is a dictionary containing all users choice(input values) from previous Page -->
             {% for key, value in filters.items %}
                 <!--
-                    When Django renders the HTML, this loop generates hidden inputs invisible to the user.
+                    When Django renders the HTML, this loop generates hidden inputs (like <input ...> ) invisible to the user.
                     & When the user selects a subject and clicks "Analyze Now", all original constraints are submitted along with selected_subject,
                     allowing ai_analyze to fetch the correct papers and give it to the AI.
                 -->
@@ -21,7 +21,12 @@
             <div class="list-group my-4 text-start">
                 {% for sub in subjects %}
                 <label class="list-group-item d-flex gap-3 py-3">
-                    <input class="form-check-input flex-shrink-0" type="radio" name="selected_subject" value="{{ sub.subject_name }}" required>
+
+                    <input class="form-check-input flex-shrink-0" type="radio" name="selected_paper_id" value="{{ sub.id }}" required>
+                    <!--
+                        Sends the unique database ID {{sub.id}} of the selected paper via POST as 'selected_paper_id'.
+                        Flow: User selects radio -> form submits ID to ai_analyze view -> view fetches this exact Paper record directly by primary key from DB -> extracts its PDF text for AI.
+                    -->
                     <span>
                         <strong>{{ sub.subject_name }}</strong>
                         <small class="d-block text-muted">Code: {{ sub.subject_code }}</small>
