@@ -1,0 +1,69 @@
+
+# 1. Operating system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+__MACOSX/
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+
+# 2. Editors and IDEs
+.vscode/*
+!.vscode/extensions.json
+*.code-workspace
+.idea/
+*.suo
+*.swp
+*~
+
+
+# 3. Python and virtual environments
+djenv/
+venv/
+env/
+ENV/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# 4. Django: databases, uploads, collected static
+
+*.sqlite3
+*.db
+*.sql
+
+# User uploads are ignored, but college logos are design assets and stay tracked
+**/media/*
+!**/media/college_logos/
+
+# Output of `collectstatic` (regenerated on the server)
+staticfiles/
+
+*.log
+
+# 5. Secrets (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secret_key.txt
