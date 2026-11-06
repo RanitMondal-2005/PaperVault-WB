@@ -133,53 +133,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ----------------------------------------------------------------
 
-    // ── Upload Material: Toggle Semester for Placement Notes ──
+    // ── Upload Material: Hide Semester for Placement Notes ──
     const materialTypeSelect = document.getElementById('materialTypeSelect');
     const uploadSemesterField = document.getElementById('uploadSemesterField');
+
     if (materialTypeSelect && uploadSemesterField) {
-        function toggleSemester() {
-            uploadSemesterField.style.display = materialTypeSelect.value === 'PLACEMENT' ? 'none' : '';
+
+        function toggleUploadSemester() {
+            if (materialTypeSelect.value === 'PLACEMENT') {
+                uploadSemesterField.style.display = 'none'; // Dont Show
+            } else {
+                uploadSemesterField.style.display = ''; // Else Show
+            }
         }
-        materialTypeSelect.addEventListener('change', toggleSemester);
-        toggleSemester();
+
+        materialTypeSelect.addEventListener('change', toggleUploadSemester);
+        toggleUploadSemester();
     }
 
 
-    // ── Materials Page: Dynamic Field Toggling ──
+    // ── Materials Search: Hide Stream/Semester & Give Subject name as Filtering Parameter ──
     const matTypeSelect = document.getElementById('matTypeSelect');
     const streamField = document.getElementById('streamField');
     const semesterField = document.getElementById('semesterField');
     const subjectField = document.getElementById('subjectField');
-    const placementSubjectSelect = document.getElementById('placementSubjectSelect');
 
     if (matTypeSelect) {
         function toggleMaterialFields() {
-            const isPlacement = matTypeSelect.value === 'PLACEMENT';
-            if (streamField) streamField.classList.toggle('d-none', isPlacement);
-            if (semesterField) semesterField.classList.toggle('d-none', isPlacement);
-            if (subjectField) subjectField.classList.toggle('d-none', !isPlacement);
-            if (isPlacement && placementSubjectSelect && placementSubjectSelect.options.length <= 1) {
-                loadPlacementSubjects();
+            if (matTypeSelect.value === 'PLACEMENT') {
+                // Hide Stream and Semester columns completely
+                if (streamField) streamField.classList.add('d-none');
+                if (semesterField) semesterField.classList.add('d-none');
+
+                // Show Subject column
+                if (subjectField) subjectField.classList.remove('d-none');
+            } else {
+                // Show Stream and Semester columns
+                if (streamField) streamField.classList.remove('d-none');
+                if (semesterField) semesterField.classList.remove('d-none');
+
+                // Hide Subject column
+                if (subjectField) subjectField.classList.add('d-none');
             }
         }
-
-        function loadPlacementSubjects() {
-            fetch('/materials/api/placement-subjects/')
-                .then(r => r.json())
-                .then(data => {
-                    placementSubjectSelect.innerHTML = '<option value="">All Subjects</option>';
-                    data.subjects.forEach(sub => {
-                        const opt = document.createElement('option');
-                        opt.value = sub;
-                        opt.textContent = sub;
-                        placementSubjectSelect.appendChild(opt);
-                    });
-                })
-                .catch(() => {});
-        }
-
         matTypeSelect.addEventListener('change', toggleMaterialFields);
-        toggleMaterialFields();
+        toggleMaterialFields(); // Run on initial page load
     }
 
 
@@ -204,4 +202,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
