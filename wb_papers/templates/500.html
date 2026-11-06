@@ -1,0 +1,18 @@
+{# Server Error - 500 Error Page #}
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 text-center" style="min-height:60vh; display:flex; align-items:center; justify-content:center;">
+    <div>
+        <i class="bi bi-exclamation-triangle text-danger" style="font-size:4rem;"></i>
+        <h2 class="fw-bold mt-3 mb-2">Something Went Wrong</h2>
+        <p class="text-muted mb-4" style="max-width:400px; margin:0 auto;">
+            An unexpected error occurred on our end. We're working on fixing it.
+            Please try again in a few minutes.
+        </p>
+        <a href="/" class="btn btn-primary rounded-pill px-5 fw-bold">
+            <i class="bi bi-house me-2"></i>Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}

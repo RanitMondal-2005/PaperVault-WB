@@ -1,0 +1,18 @@
+{# Bad request - 400 Error Page #}
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 text-center" style="min-height:60vh; display:flex; align-items:center; justify-content:center;">
+    <div>
+        <i class="bi bi-question-circle text-secondary" style="font-size:4rem;"></i>
+        <h2 class="fw-bold mt-3 mb-2">Bad Request</h2>
+        <p class="text-muted mb-4" style="max-width:400px; margin:0 auto;">
+            The request could not be understood. This may be due to an expired form session.
+            Please go back and try again.
+        </p>
+        <a href="/" class="btn btn-primary rounded-pill px-5 fw-bold">
+            <i class="bi bi-house me-2"></i>Go Home
+        </a>
+    </div>
+</div>
+{% endblock %}

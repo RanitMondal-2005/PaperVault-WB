@@ -1,0 +1,23 @@
+{# Permission Denied Page - 404 Error Page #}
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 text-center" style="min-height:60vh; display:flex; align-items:center; justify-content:center;">
+    <div>
+        <i class="bi bi-shield-x text-warning" style="font-size:4rem;"></i>
+        <h2 class="fw-bold mt-3 mb-2">Access Denied</h2>
+        <p class="text-muted mb-4" style="max-width:400px; margin:0 auto;">
+            You don't have permission to access this page.
+            If you're a faculty member, please ensure your account is verified.
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="/" class="btn btn-primary rounded-pill px-5 fw-bold">
+                <i class="bi bi-house me-2"></i>Go Home
+            </a>
+            <a href="/login/" class="btn btn-outline-primary rounded-pill px-5 fw-bold">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
