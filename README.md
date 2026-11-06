@@ -115,23 +115,22 @@ OPENROUTER_API_KEY=your-openrouter-api-key-here
 ---
 
 ## 📁 Project Structure
-## 📁 Project Structure
 
 ```
 PaperVault-WB/
-├── wb_papers/          
-├── papers/             
-├── materials/          
-├── colleges/           
-├── users/              
-├── templates/          
-├── static/             
+├── wb_papers/
+├── papers/
+├── materials/
+├── colleges/
+├── users/
+├── templates/
+├── static/
 │   ├── css/
 │   └── js/
-├── media/              
-│   └── college_logos/  
-├── populate_db.py      
-└── .env.example        
+├── media/
+│   └── college_logos/
+├── populate_db.py
+└── .env.example
 ```
 
 ---
@@ -143,6 +142,23 @@ PaperVault-WB/
 | **Student** | Browse & download papers and materials (no login needed) |
 | **Faculty** | Upload papers & materials, edit own uploads (requires verification) |
 | **Admin** | Full access, verify faculty accounts, manage all data |
+
+---
+## 📚 Technical Reference
+
+1. OpenRouter Integration Syntax
+OpenRouter is an API gateway that routes requests to various LLMs (like poolside, Llama, Claude, etc.) while maintaining 100% compatibility with OpenAI's API format:
+[FULL DOC](https://openrouter.ai/docs)
+* (No need to read this, just keep)
+
+2. OpenAI Python SDK Syntax (MAIN DOC FOR OUR PROJECT)
+The method calls for generating completions and reading the response:
+[USING OPENAI SDK](https://openrouter.ai/docs/quickstart?utm_source=gemini#using-the-openai-sdk)
+* (see 22 lines code part)
+
+3. PDF Extraction Syntax :
+[PyPDF2 full docs](https://pypdf2.readthedocs.io/en/3.x/)
+[Text extraction from pypdf2](https://pypdf2.readthedocs.io/en/3.x/user/extract-text.html)
 
 ---
 
